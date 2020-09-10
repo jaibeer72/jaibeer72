@@ -5,3 +5,7 @@
 - 🌍 Currently learning Math (cause you can never practice enough) and Some C#. 
 - 🎸 And i like to play the guitar. 
 
+
+# Blog posts
+<!-- BLOG-POST-LIST:START -->
+<!-- BLOG-POST-LIST:END -->

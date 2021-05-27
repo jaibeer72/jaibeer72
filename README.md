@@ -1,7 +1,7 @@
 ### Hello, I am Jaibeer. 
 
 ## I'm a C#/C++ Develouper.
-- 🏢 Working as a Dev for Rythmos on the Unity3D platform
+- 🏢 Working as a Game Dev 
 - 🌍 Currently learning Math and Some C#. 
 - 🎸 And i like to play the guitar. 
 

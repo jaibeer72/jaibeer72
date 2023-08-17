@@ -1,9 +1,10 @@
 ### Hello, I am Jaibeer. 
 
-## I'm a C#/C++ Develouper.
+## I'm a C#/C++ Developer.
 - 🏢 Working as a Game Dev 
 - 🌍 Currently learning Math and Some C#. 
 - 🎸 And i like to play the guitar. 
+- working on making a xcode / Visual studio compilable c++ proj for vulkan 
 
 
 # Blog posts

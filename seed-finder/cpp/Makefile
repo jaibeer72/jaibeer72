@@ -20,13 +20,10 @@ SRC      := rng.cpp
 OUT_JS   := ../wasm/rng.js
 OUT_WASM := ../wasm/rng.wasm
 
-# Functions exported to JavaScript
-EXPORTS := _wasm_generate,_wasm_free
-
 EMFLAGS := \
   -s MODULARIZE=1 \
   -s EXPORT_NAME=RNGModule \
-  -s EXPORTED_FUNCTIONS='["$(EXPORTS)"]' \
+  -s EXPORTED_FUNCTIONS='["_wasm_generate","_wasm_free"]' \
   -s EXPORTED_RUNTIME_METHODS='["HEAPF64"]' \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s ENVIRONMENT=web \

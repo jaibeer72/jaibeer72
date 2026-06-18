@@ -129,9 +129,11 @@ async function tryLoadWasm() {
     wasmLoadAttempted = true;
 
     try {
-        // The WASM glue script is expected at ../wasm/rng.js (built by the Makefile)
+        // Resolve wasm/rng.js relative to this module file (app.js → ../wasm/rng.js)
+        // using import.meta.url so the path works regardless of how the app is served.
+        const wasmJsUrl = new URL('../wasm/rng.js', import.meta.url).href;
         const script = document.createElement('script');
-        script.src = '../wasm/rng.js';
+        script.src = wasmJsUrl;
         await new Promise((resolve, reject) => {
             script.onload = resolve;
             script.onerror = reject;

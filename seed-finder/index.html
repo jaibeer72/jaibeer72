@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seed Finder — RNG Explorer</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ── Reset & base ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* ── Card ────────────────────────────────────────────────── */
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Controls ────────────────────────────────────────────── */
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    label {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    input[type="number"] {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 0.5rem;
+      color: #e2e8f0;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #60a5fa;
+    }
+
+    button#generate-btn {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      border: none;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      align-self: end;
+      height: 2.3rem;
+    }
+
+    button#generate-btn:hover { opacity: 0.85; }
+
+    /* ── WASM status badge ───────────────────────────────────── */
+    #wasm-status {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.35rem;
+      margin-top: 0.75rem;
+    }
+    .wasm-ok   { background: #064e3b; color: #6ee7b7; }
+    .wasm-warn { background: #451a03; color: #fbbf24; }
+    .wasm-idle { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+
+    /* ── Chart ───────────────────────────────────────────────── */
+    .chart-wrap {
+      position: relative;
+      height: 380px;
+      width: 100%;
+    }
+
+    /* ── Stats grid ──────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+    }
+
+    .stat-box dt {
+      font-size: 0.72rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-box dd {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-top: 0.15rem;
+    }
+
+    /* ── Pass-list ───────────────────────────────────────────── */
+    #pass-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    #pass-list li {
+      background: #064e3b;
+      color: #6ee7b7;
+      border-radius: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.82rem;
+    }
+
+    /* ── Legend note ─────────────────────────────────────────── */
+    .legend-note {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-top: 0.75rem;
+    }
+
+    .legend-note span.pass  { color: #34d399; font-weight: 600; }
+    .legend-note span.fail  { color: #60a5fa; font-weight: 600; }
+    .legend-note span.line  { color: #ef4444; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <h1>🎲 Seed Finder</h1>
+  <p class="subtitle">Find your lucky seed · Compare JS (mulberry32) vs C++ WASM (mt19937)</p>
+
+  <!-- ── Controls ──────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Configuration</h2>
+    <div class="controls">
+      <div class="field">
+        <label for="seed">Seed</label>
+        <input type="number" id="seed" value="42" min="0" />
+      </div>
+      <div class="field">
+        <label for="count">Turns (1–500)</label>
+        <input type="number" id="count" value="50" min="1" max="500" />
+      </div>
+      <div class="field">
+        <label for="min">Range Min</label>
+        <input type="number" id="min" value="0" step="any" />
+      </div>
+      <div class="field">
+        <label for="max">Range Max</label>
+        <input type="number" id="max" value="100" step="any" />
+      </div>
+      <div class="field">
+        <label for="threshold">Threshold (%)</label>
+        <input type="number" id="threshold" value="60" min="0" max="100" step="1" />
+      </div>
+      <button id="generate-btn">▶ Generate</button>
+    </div>
+
+    <div id="wasm-status" class="wasm-idle">⏳ C++ WASM not loaded yet</div>
+  </div>
+
+  <!-- ── Chart ──────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>RNG Output per Turn</h2>
+    <div class="chart-wrap">
+      <canvas id="chart"></canvas>
+    </div>
+    <p class="legend-note">
+      <span class="pass">■ Green</span> = above threshold (PASS) &nbsp;
+      <span class="fail">■ Blue</span> = below threshold (FAIL) &nbsp;
+      <span class="line">— Red dashed</span> = threshold line
+    </p>
+  </div>
+
+  <!-- ── Stats ──────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Summary (JS RNG)</h2>
+    <dl class="stats">
+      <div class="stat-box">
+        <dt>Total Turns</dt>
+        <dd id="stat-count">—</dd>
+      </div>
+      <div class="stat-box">
+        <dt>Passing Turns</dt>
+        <dd id="stat-pass">—</dd>
+      </div>
+      <div class="stat-box">
+        <dt>Average Value</dt>
+        <dd id="stat-avg">—</dd>
+      </div>
+      <div class="stat-box">
+        <dt>Threshold Value</dt>
+        <dd id="stat-threshold">—</dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- ── Pass turn list ────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Passing Turns (JS)</h2>
+    <ul id="pass-list"><li>—</li></ul>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

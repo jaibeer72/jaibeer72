@@ -14,6 +14,7 @@ const RESUME_DATA = {
     github: "https://github.com/jaibeer72",
     linkedin: "https://www.linkedin.com/in/jaibeer72",
     itch: "https://jaibeer72.itch.io",
+    hireMe: "https://www.linkedin.com/in/jaibeer72",
   },
 
   skills: [

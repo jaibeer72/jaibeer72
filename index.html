@@ -94,7 +94,10 @@
 <!-- ===================== FOOTER ===================== -->
 <footer>
   <div class="container">
-    <span id="footer-text"><!-- js --></span>
+    <div class="footer-inner">
+      <a id="footer-hire" class="footer-hire" hidden>✉ Hire Me</a>
+      <span id="footer-text"><!-- js --></span>
+    </div>
   </div>
 </footer>
 
@@ -194,6 +197,14 @@
   if (d.contact.github)   makeHeroLink(d.contact.github,   "GitHub");
   if (d.contact.linkedin) makeHeroLink(d.contact.linkedin, "LinkedIn");
   if (d.contact.itch)     makeHeroLink(d.contact.itch,     "itch.io");
+
+  if (d.contact.hireMe) {
+    var hireBtn = el("a", "btn btn-gold");
+    hireBtn.href = d.contact.hireMe;
+    hireBtn.dataset.label = "Hire Me";
+    hireBtn.innerHTML = "✉ Hire Me";
+    linksEl.appendChild(hireBtn);
+  }
 
   linksEl.addEventListener("click", function (ev) {
     var a = ev.target.closest("a.btn");
@@ -468,6 +479,16 @@
   /* ── FOOTER ───────────────────────────────────────────── */
   document.getElementById("footer-text").textContent =
     d.name + " · " + new Date().getFullYear();
+
+  var footerHire = document.getElementById("footer-hire");
+  if (d.contact.hireMe) {
+    footerHire.href = d.contact.hireMe;
+    footerHire.removeAttribute("hidden");
+    footerHire.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      openRedirect(d.contact.hireMe, "Hire Me");
+    });
+  }
 })();
 </script>
 

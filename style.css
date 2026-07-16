@@ -606,9 +606,9 @@ body.sheet-open { overflow: hidden; }
 .sheet-img {
   width: 100%;
   height: auto;
-  max-height: 260px;
   object-fit: cover;
   display: block;
+  border-radius: var(--radius);
 }
 
 .sheet-desc {
@@ -765,6 +765,37 @@ footer {
   font-size: 0.76rem;
   color: var(--text-dim);
   font-family: var(--font-mono);
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-hire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0d0d0d;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+  text-decoration: none;
+}
+
+.footer-hire:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  color: #0d0d0d;
+  text-decoration: none;
 }
 
 /* ---------- responsive ------------------------------------- */

@@ -670,6 +670,12 @@
     });
   }
 
+  /* initialise sections to "about" without triggering the slide transition */
+  sectionsTrack.style.transition = 'none';
+  showSection("about");
+  void sectionsTrack.offsetWidth; /* force reflow before re-enabling transition */
+  sectionsTrack.style.transition = '';
+
   navTabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
       showSection(tab.dataset.section);

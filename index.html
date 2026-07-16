@@ -260,7 +260,7 @@
     header.appendChild(rightCol);
     card.appendChild(header);
 
-    card.appendChild(el("span", "exp-stack", esc(exp.stack)));
+    card.appendChild(el("div", "exp-stack", esc(exp.stack)));
 
     if (exp.shipped && exp.shipped.length) {
       var shippedRow = el("div", "shipped-row");

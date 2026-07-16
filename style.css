@@ -298,21 +298,25 @@ section { padding: 4rem 0; }
 /* carousel viewport — clips the sliding track */
 .exp-carousel-viewport {
   overflow: hidden;
+  width: 100%;           /* explicit width so child 100% resolves correctly */
   margin-bottom: 1rem;
 }
 
 /* track — all panels in a row, moves via translateX */
 #exp-panels {
   display: flex;
+  width: 100%;           /* match viewport so each panel = exactly 1 viewport width */
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
   touch-action: pan-y;
 }
 
 .exp-panel {
-  min-width: 100%;
+  width: 100%;           /* exact width — no min-width ambiguity in flex */
   flex-shrink: 0;
   padding-bottom: 0.5rem; /* breathing room so card shadow shows */
+  min-width: 0;          /* prevent any implicit content-size expansion */
+  box-sizing: border-box;
 }
 
 /* prev / next arrows */
@@ -358,7 +362,10 @@ section { padding: 4rem 0; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 2rem 2rem 1.75rem;
-  /* ensure text wraps, never causes card to overflow */
+  /* hard containment — no child may break out of the card */
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
   word-break: break-word;
   overflow-wrap: anywhere;
 }
@@ -392,6 +399,7 @@ section { padding: 4rem 0; }
   text-align: right;
   white-space: nowrap;
   flex-shrink: 0;
+  max-width: 100%;
 }
 
 .exp-company {
@@ -408,7 +416,8 @@ section { padding: 4rem 0; }
 }
 
 .exp-stack {
-  display: inline-block;
+  display: block;         /* stretch to card width so long stacks wrap, not overflow */
+  max-width: 100%;
   font-size: 0.72rem;
   font-family: var(--font-mono);
   color: var(--text-dim);
@@ -419,6 +428,7 @@ section { padding: 4rem 0; }
   margin-bottom: 1.4rem;
   white-space: normal;
   word-break: break-word;
+  box-sizing: border-box;
 }
 
 .exp-highlights {

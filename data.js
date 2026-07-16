@@ -13,6 +13,7 @@ const RESUME_DATA = {
   contact: {
     github: "https://github.com/jaibeer72",
     linkedin: "https://www.linkedin.com/in/jaibeer72",
+    itch: "https://jaibeer72.itch.io",
   },
 
   skills: [
@@ -96,6 +97,9 @@ const RESUME_DATA = {
       period: "Feb 2024 – May 2024",
       tag: "Reliance · 2024",
       stack: "Unity, C#, .NET, Spring Boot, Git LFS, REST",
+      shipped: [
+        { name: "American Dad! Apocalypse Soon", url: "https://apps.apple.com/us/app/american-dad-apocalypse-soon/id1150563582" },
+      ],
       highlights: [
         "Maintained and shipped new features for the live iOS/Android title American Dad!",
         "Enhanced client-server communication layer using C# .NET and Spring Boot.",
@@ -112,6 +116,10 @@ const RESUME_DATA = {
       period: "May 2021 – Sep 2022",
       tag: "Ubisoft · 2021",
       stack: "C++, C#, Nintendo Switch SDK, PS5 SDK, Jenkins, TeamCity",
+      shipped: [
+        { name: "Just Dance 2023", url: "https://www.ubisoft.com/en-us/game/just-dance/2023" },
+        { name: "Oddballers", url: "https://www.ubisoft.com/en-us/game/oddballers" },
+      ],
       highlights: [
         "Shipped Just Dance 2023 and Oddballers across Nintendo Switch and PlayStation 5.",
         "Managed cross-platform compliance, memory budgets, and platform certification for both titles.",
@@ -180,7 +188,7 @@ const RESUME_DATA = {
       stack: "HTML, JavaScript, CSS",
       description:
         "Lightweight browser game shipped under 13 KB — a constraint-driven design exercise in efficient gameplay.",
-      links: [],
+      links: [{ label: "Play on itch.io", url: "https://jaibeer72.itch.io/spacebound" }],
     },
   ],
 };

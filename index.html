@@ -136,6 +136,14 @@
     li.innerHTML = "LinkedIn";
     linksEl.appendChild(li);
   }
+  if (d.contact.itch) {
+    var it = el("a", "btn");
+    it.href = d.contact.itch;
+    it.target = "_blank";
+    it.rel = "noopener";
+    it.innerHTML = "itch.io";
+    linksEl.appendChild(it);
+  }
 
   /* ── ABOUT ────────────────────────────────────────────── */
   document.getElementById("summary-box").textContent = d.summary;
@@ -192,6 +200,20 @@
     card.appendChild(header);
 
     card.appendChild(el("span", "exp-stack", esc(exp.stack)));
+
+    if (exp.shipped && exp.shipped.length) {
+      var shippedRow = el("div", "shipped-row");
+      var shippedLabel = el("span", "shipped-label", "Shipped:");
+      shippedRow.appendChild(shippedLabel);
+      exp.shipped.forEach(function (title) {
+        var a = el("a", "shipped-badge", esc(title.name));
+        a.href = title.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        shippedRow.appendChild(a);
+      });
+      card.appendChild(shippedRow);
+    }
 
     var ul = el("ul", "exp-highlights");
     exp.highlights.forEach(function (h) {

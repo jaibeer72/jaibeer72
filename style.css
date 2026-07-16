@@ -443,6 +443,49 @@ section { padding: 4rem 0; }
   text-decoration: none;
 }
 
+/* ---------- shipped titles --------------------------------- */
+.shipped-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.shipped-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 600;
+  margin-right: 0.15rem;
+}
+
+.shipped-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  background: var(--surface2);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gold);
+  transition: background var(--transition), color var(--transition);
+}
+
+.shipped-badge::before {
+  content: '🎮';
+  font-size: 0.7rem;
+}
+
+.shipped-badge:hover {
+  background: var(--gold);
+  color: #0d0d0d;
+  text-decoration: none;
+}
+
 /* ---------- footer ----------------------------------------- */
 footer {
   border-top: 1px solid var(--border);

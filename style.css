@@ -294,9 +294,62 @@ section { padding: 4rem 0; }
   color: #0d0d0d;
 }
 
-/* the panel */
-.exp-panel { display: none; }
-.exp-panel.active { display: block; }
+/* swipe container — all panels sit side-by-side, scroll-snap handles paging */
+#exp-panels {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* negative margin trick so scroll reaches edge of container */
+  margin-bottom: 1rem;
+}
+
+#exp-panels::-webkit-scrollbar { display: none; }
+
+.exp-panel {
+  min-width: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+/* prev / next arrows */
+.exp-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.exp-nav-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 1rem;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  line-height: 1;
+  font-family: var(--font-sans);
+}
+
+.exp-nav-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.exp-nav-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.exp-nav-counter {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
 
 .exp-card {
   background: var(--surface);
@@ -482,6 +535,73 @@ section { padding: 4rem 0; }
 
 .shipped-badge:hover {
   background: var(--gold);
+  color: #0d0d0d;
+  text-decoration: none;
+}
+
+/* ---------- redirect modal --------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-overlay[hidden] { display: none; }
+
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-body {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.modal-dest {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0d0d0d;
+  font-weight: 700;
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
   color: #0d0d0d;
   text-decoration: none;
 }

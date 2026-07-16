@@ -66,6 +66,13 @@
       <!-- tab row: newest → oldest -->
       <div class="exp-tab-row" id="exp-tab-row"><!-- js --></div>
 
+      <!-- prev / next controls -->
+      <div class="exp-nav">
+        <button class="exp-nav-btn" id="exp-prev" aria-label="Previous" disabled>← Prev</button>
+        <span class="exp-nav-counter" id="exp-counter"></span>
+        <button class="exp-nav-btn" id="exp-next" aria-label="Next">Next →</button>
+      </div>
+
       <!-- panels -->
       <div id="exp-panels"><!-- js --></div>
     </div>
@@ -88,6 +95,22 @@
     <span id="footer-text"><!-- js --></span>
   </div>
 </footer>
+
+<!-- ===================== REDIRECT MODAL ===================== -->
+<div id="redirect-modal" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <p class="modal-title">Leaving this page</p>
+    <p class="modal-body">
+      You're about to open
+      <span id="modal-dest-name" class="modal-dest"></span>
+      in a new tab.
+    </p>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="btn">Cancel</button>
+      <a id="modal-confirm" class="btn btn-gold" target="_blank" rel="noopener">Go there →</a>
+    </div>
+  </div>
+</div>
 
 <!-- data first, then renderer -->
 <script src="data.js"></script>
@@ -173,6 +196,10 @@
   /* ── EXPERIENCE ───────────────────────────────────────── */
   var tabRow    = document.getElementById("exp-tab-row");
   var panelsEl  = document.getElementById("exp-panels");
+  var prevBtn   = document.getElementById("exp-prev");
+  var nextBtn   = document.getElementById("exp-next");
+  var counter   = document.getElementById("exp-counter");
+  var total     = d.experience.length;
 
   d.experience.forEach(function (exp, idx) {
     /* tab button */
@@ -181,8 +208,8 @@
     btn.textContent = exp.tag;
     tabRow.appendChild(btn);
 
-    /* panel */
-    var panel = el("div", "exp-panel" + (idx === 0 ? " active" : ""));
+    /* panel — always rendered, scroll-snap controls visibility */
+    var panel = el("div", "exp-panel");
     panel.id = "panel-" + exp.id;
 
     var card = el("div", "exp-card");
@@ -225,15 +252,54 @@
     panelsEl.appendChild(panel);
   });
 
-  /* tab click logic */
+  /* scroll to a given 0-based index */
+  function scrollToExp(idx) {
+    panelsEl.scrollTo({ left: idx * panelsEl.offsetWidth, behavior: "smooth" });
+  }
+
+  /* sync tabs + arrows to current scroll position */
+  function syncExpUI() {
+    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
+    idx = Math.max(0, Math.min(total - 1, idx));
+
+    var btns = tabRow.querySelectorAll(".exp-tab-btn");
+    btns.forEach(function (b, i) { b.classList.toggle("active", i === idx); });
+    // scroll active tab into view in the tab strip
+    if (btns[idx]) btns[idx].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    counter.textContent = (idx + 1) + " / " + total;
+  }
+
+  /* initialise counter */
+  counter.textContent = "1 / " + total;
+  prevBtn.disabled = true;
+
+  /* tab click → scroll */
   tabRow.addEventListener("click", function (ev) {
     var btn = ev.target.closest(".exp-tab-btn");
     if (!btn) return;
-    tabRow.querySelectorAll(".exp-tab-btn").forEach(function (b) { b.classList.remove("active"); });
-    panelsEl.querySelectorAll(".exp-panel").forEach(function (p) { p.classList.remove("active"); });
-    btn.classList.add("active");
-    var target = document.getElementById("panel-" + btn.dataset.target);
-    if (target) target.classList.add("active");
+    var btns = Array.from(tabRow.querySelectorAll(".exp-tab-btn"));
+    scrollToExp(btns.indexOf(btn));
+  });
+
+  /* arrow buttons */
+  prevBtn.addEventListener("click", function () {
+    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
+    scrollToExp(Math.max(0, idx - 1));
+  });
+
+  nextBtn.addEventListener("click", function () {
+    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
+    scrollToExp(Math.min(total - 1, idx + 1));
+  });
+
+  /* sync on scroll (debounced) */
+  var scrollTimer;
+  panelsEl.addEventListener("scroll", function () {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(syncExpUI, 60);
   });
 
   /* ── PROJECTS ─────────────────────────────────────────── */
@@ -248,13 +314,47 @@
       proj.links.forEach(function (lnk) {
         var a = el("a", "proj-link", esc(lnk.label));
         a.href = lnk.url;
-        a.target = "_blank";
-        a.rel = "noopener";
+        a.dataset.label = lnk.label;
         links.appendChild(a);
       });
       card.appendChild(links);
     }
     grid.appendChild(card);
+  });
+
+  /* ── REDIRECT MODAL ───────────────────────────────────── */
+  var modal      = document.getElementById("redirect-modal");
+  var modalName  = document.getElementById("modal-dest-name");
+  var modalConfirm = document.getElementById("modal-confirm");
+  var modalCancel  = document.getElementById("modal-cancel");
+
+  /* intercept all .proj-link clicks */
+  grid.addEventListener("click", function (ev) {
+    var link = ev.target.closest(".proj-link");
+    if (!link) return;
+    ev.preventDefault();
+    modalName.textContent = link.dataset.label || link.textContent;
+    modalConfirm.href = link.href;
+    modal.removeAttribute("hidden");
+  });
+
+  modalCancel.addEventListener("click", function () {
+    modal.setAttribute("hidden", "");
+  });
+
+  /* close on backdrop click */
+  modal.addEventListener("click", function (ev) {
+    if (ev.target === modal) modal.setAttribute("hidden", "");
+  });
+
+  /* close on Escape */
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") modal.setAttribute("hidden", "");
+  });
+
+  /* after confirm click, close modal */
+  modalConfirm.addEventListener("click", function () {
+    modal.setAttribute("hidden", "");
   });
 
   /* ── SITE NAV (section switcher) ──────────────────────── */

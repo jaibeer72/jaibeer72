@@ -147,7 +147,8 @@ const RESUME_DATA = {
 
   /**
    * Projects — add as many as you like.
-   * Each has: id, name, stack, description, links (array of {label, url})
+   * Each has: id, name, stack, description, links (array of {label, url}),
+   *           image (optional hero image URL), details (array of bullet strings)
    */
   projects: [
     {
@@ -156,6 +157,15 @@ const RESUME_DATA = {
       stack: "C++, Vulkan, CMake, vcpkg",
       description:
         "Cross-platform modular graphics engine built from scratch on the Vulkan API. Robust CMake + vcpkg build pipeline enables native compilation on Windows, Linux, and macOS with zero-friction dependency management.",
+      image: "https://raw.githubusercontent.com/jaibeer72/VulkanGFX/main/Docs/Figure_3.1_B18196.jpg",
+      details: [
+        "Built the full Vulkan pipeline from instance creation → surface → physical/logical device → swapchain → render pass → graphics pipeline.",
+        "Supports Windows (MSVC / MinGW), Linux (Ninja/GCC) and macOS (Xcode + MoltenVK) via CMake presets.",
+        "All dependencies (GLFW 3.4, GLM 1.0.2, Vulkan SDK 1.4) managed automatically through a vcpkg submodule — zero manual setup.",
+        "Implements command pools, semaphores, and fences for correct GPU–CPU synchronisation across frames.",
+        "CI/CD via GitHub Actions validates the build on all three platforms on every push.",
+        "Architecture designed for future 2D UI system and binary-library consumption by C# frontends.",
+      ],
       links: [{ label: "GitHub", url: "https://github.com/jaibeer72/VulkanGFX" }],
     },
     {
@@ -164,7 +174,15 @@ const RESUME_DATA = {
       stack: "C++, OpenGL, GLSL",
       description:
         "Custom C++/OpenGL graphics engine following SOLID design principles. Modular, decoupled rendering pipeline with extensible material-based lighting, flexible object transformations, and a cross-platform input abstraction layer.",
-      links: [{ label: "GitHub", url: "https://github.com/jaibeer72/OpenGLRenderer" }],
+      details: [
+        "Designed around SOLID principles — rendering, scene management, and input are fully decoupled modules.",
+        "Material system supports diffuse/specular/emissive maps with per-object shader overrides.",
+        "Flexible object transform hierarchy: translate, rotate, scale with local-to-world matrix composition.",
+        "Cross-platform input abstraction layer handles keyboard and mouse uniformly on Windows and Linux.",
+        "GLSL shaders are hot-reloadable at runtime for rapid visual iteration without rebuilding.",
+        "Serves as the learning predecessor to VulkanGFX — documents the explicit API delta between GL and Vulkan.",
+      ],
+      links: [],
     },
     {
       id: "protean",
@@ -172,6 +190,13 @@ const RESUME_DATA = {
       stack: "React, Node.js, Express, USAlign, Microservices",
       description:
         "Full-stack protein visualisation suite using a microservices architecture. React front-end + Node/Express back-end integrates with USAlign to perform automated 3D protein superimposition and real-time structural analysis.",
+      details: [
+        "Microservices architecture separates the alignment compute service from the REST API and the React UI.",
+        "Integrates USAlign — a state-of-the-art structure alignment algorithm — via a spawned child process on the Node backend.",
+        "Real-time 3D protein structure rendering in the browser using a WebGL-based molecular viewer.",
+        "Automated superimposition pipeline: upload two PDB files → align → visualise RMSD-annotated overlay instantly.",
+        "Built as an MSc Distinction project at the University of Dundee, demonstrating full-stack bioinformatics tooling.",
+      ],
       links: [],
     },
     {
@@ -180,6 +205,13 @@ const RESUME_DATA = {
       stack: "React, TMDB API, PostgreSQL / MongoDB",
       description:
         "Scalable streaming-service prototype integrating the TMDB API. Includes a comparative analysis of NoSQL vs. relational database paradigms to determine optimal schema strategies for recommendation engines.",
+      details: [
+        "React SPA with dynamic routing for browse, title detail, and search pages.",
+        "Live data from The Movie Database (TMDB) API — posters, trailers, cast, and ratings.",
+        "Dual database implementation: PostgreSQL (relational) vs MongoDB (document) for user watchlists and ratings.",
+        "Comparative report analyses query performance and schema flexibility across both paradigms for recommendation workloads.",
+        "GitHub: jaibeer72/netflix-clone-sem1",
+      ],
       links: [],
     },
     {
@@ -188,7 +220,29 @@ const RESUME_DATA = {
       stack: "HTML, JavaScript, CSS",
       description:
         "Lightweight browser game shipped under 13 KB — a constraint-driven design exercise in efficient gameplay.",
+      details: [
+        "Entire game — engine, renderer, physics, and audio — fits inside 13 KB of vanilla HTML/JS/CSS.",
+        "No frameworks, no build tools: a deliberate constraint to sharpen core JavaScript fundamentals.",
+        "Canvas 2D renderer with a game loop running at a locked 60 fps using requestAnimationFrame.",
+        "Procedurally generated asteroid field with collision detection and escalating difficulty curve.",
+        "Published on itch.io — playable directly in any modern browser with zero install.",
+      ],
       links: [{ label: "Play on itch.io", url: "https://jaibeer72.itch.io/spacebound" }],
+    },
+    {
+      id: "ar-shooter",
+      name: "AR Shooter Target Game",
+      stack: "Unity, ARKit, C#, ShaderLab",
+      description:
+        "Mobile AR shooting game that uses the device gyroscope to spawn and aim at 3D targets overlaid on the real world. Built with Unity's AR Foundation and ARKit.",
+      details: [
+        "Gyroscope-driven aiming — tilt and rotate the phone to track floating 3D targets in AR space.",
+        "Custom ShaderLab shaders for target hit-flash effects and AR occlusion masking.",
+        "Procedural target spawner places objects in physical world-space using ARKit plane detection.",
+        "Score system with combo multipliers and time pressure to drive replayability.",
+        "5 GitHub stars — one of the more-starred repositories in the portfolio.",
+      ],
+      links: [{ label: "GitHub", url: "https://github.com/jaibeer72/AR-Basic-Shooter-Target-Game" }],
     },
   ],
 };

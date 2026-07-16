@@ -73,8 +73,10 @@
         <button class="exp-nav-btn" id="exp-next" aria-label="Next">Next →</button>
       </div>
 
-      <!-- panels -->
-      <div id="exp-panels"><!-- js --></div>
+      <!-- carousel viewport clips the sliding track -->
+      <div class="exp-carousel-viewport">
+        <div id="exp-panels"><!-- js --></div>
+      </div>
     </div>
   </section>
 
@@ -112,6 +114,25 @@
   </div>
 </div>
 
+<!-- ===================== PROJECT BOTTOM SHEET ===================== -->
+<div id="proj-sheet-overlay" class="sheet-overlay" hidden>
+  <div id="proj-sheet" class="proj-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-header">
+      <div>
+        <p id="sheet-stack" class="sheet-stack"></p>
+        <h2 id="sheet-title" class="sheet-title"></h2>
+      </div>
+      <button id="sheet-close" class="sheet-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="sheet-image-wrap" class="sheet-image-wrap"></div>
+      <p id="sheet-desc" class="sheet-desc"></p>
+      <ul id="sheet-details" class="sheet-details"></ul>
+      <div id="sheet-links" class="sheet-links"></div>
+    </div>
+  </div>
+</div>
+
 <!-- data first, then renderer -->
 <script src="data.js"></script>
 <script>
@@ -134,6 +155,24 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* ── REDIRECT MODAL (shared) ──────────────────────────── */
+  var modal        = document.getElementById("redirect-modal");
+  var modalName    = document.getElementById("modal-dest-name");
+  var modalConfirm = document.getElementById("modal-confirm");
+  var modalCancel  = document.getElementById("modal-cancel");
+
+  function openRedirect(href, label) {
+    modalName.textContent = label || href;
+    modalConfirm.href = href;
+    modal.removeAttribute("hidden");
+  }
+
+  function closeRedirect() { modal.setAttribute("hidden", ""); }
+
+  modalCancel.addEventListener("click", closeRedirect);
+  modal.addEventListener("click", function (ev) { if (ev.target === modal) closeRedirect(); });
+  modalConfirm.addEventListener("click", closeRedirect);
+
   /* ── HERO ─────────────────────────────────────────────── */
   var d = RESUME_DATA;
 
@@ -143,30 +182,25 @@
   document.getElementById("hero-tagline").textContent = d.tagline;
 
   var linksEl = document.getElementById("hero-links");
-  if (d.contact.github) {
-    var gh = el("a", "btn");
-    gh.href = d.contact.github;
-    gh.target = "_blank";
-    gh.rel = "noopener";
-    gh.innerHTML = "GitHub";
-    linksEl.appendChild(gh);
+
+  function makeHeroLink(href, label) {
+    var a = el("a", "btn");
+    a.href = href;
+    a.dataset.label = label;
+    a.innerHTML = label;
+    linksEl.appendChild(a);
   }
-  if (d.contact.linkedin) {
-    var li = el("a", "btn");
-    li.href = d.contact.linkedin;
-    li.target = "_blank";
-    li.rel = "noopener";
-    li.innerHTML = "LinkedIn";
-    linksEl.appendChild(li);
-  }
-  if (d.contact.itch) {
-    var it = el("a", "btn");
-    it.href = d.contact.itch;
-    it.target = "_blank";
-    it.rel = "noopener";
-    it.innerHTML = "itch.io";
-    linksEl.appendChild(it);
-  }
+
+  if (d.contact.github)   makeHeroLink(d.contact.github,   "GitHub");
+  if (d.contact.linkedin) makeHeroLink(d.contact.linkedin, "LinkedIn");
+  if (d.contact.itch)     makeHeroLink(d.contact.itch,     "itch.io");
+
+  linksEl.addEventListener("click", function (ev) {
+    var a = ev.target.closest("a.btn");
+    if (!a) return;
+    ev.preventDefault();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
 
   /* ── ABOUT ────────────────────────────────────────────── */
   document.getElementById("summary-box").textContent = d.summary;
@@ -194,31 +228,31 @@
   });
 
   /* ── EXPERIENCE ───────────────────────────────────────── */
-  var tabRow    = document.getElementById("exp-tab-row");
-  var panelsEl  = document.getElementById("exp-panels");
-  var prevBtn   = document.getElementById("exp-prev");
-  var nextBtn   = document.getElementById("exp-next");
-  var counter   = document.getElementById("exp-counter");
-  var total     = d.experience.length;
+  var tabRow   = document.getElementById("exp-tab-row");
+  var panelsEl = document.getElementById("exp-panels");
+  var prevBtn  = document.getElementById("exp-prev");
+  var nextBtn  = document.getElementById("exp-next");
+  var counter  = document.getElementById("exp-counter");
+  var total    = d.experience.length;
+  var currentIdx = 0;
 
   d.experience.forEach(function (exp, idx) {
     /* tab button */
     var btn = el("button", "exp-tab-btn" + (idx === 0 ? " active" : ""));
-    btn.dataset.target = exp.id;
+    btn.dataset.idx = idx;
     btn.textContent = exp.tag;
     tabRow.appendChild(btn);
 
-    /* panel — always rendered, scroll-snap controls visibility */
+    /* panel */
     var panel = el("div", "exp-panel");
     panel.id = "panel-" + exp.id;
 
     var card = el("div", "exp-card");
 
-    // header row
     var header = el("div", "exp-header");
-    var leftCol = el("div");
-    leftCol.appendChild(el("div", "exp-role", esc(exp.role)));
-    leftCol.appendChild(el("div", "exp-company", esc(exp.company)));
+    var leftCol = el("div", "exp-header-left");
+    leftCol.appendChild(el("div", "exp-role",     esc(exp.role)));
+    leftCol.appendChild(el("div", "exp-company",  esc(exp.company)));
     leftCol.appendChild(el("div", "exp-location", esc(exp.location)));
     var rightCol = el("div", "exp-meta");
     rightCol.textContent = exp.period;
@@ -230,13 +264,11 @@
 
     if (exp.shipped && exp.shipped.length) {
       var shippedRow = el("div", "shipped-row");
-      var shippedLabel = el("span", "shipped-label", "Shipped:");
-      shippedRow.appendChild(shippedLabel);
+      shippedRow.appendChild(el("span", "shipped-label", "Shipped:"));
       exp.shipped.forEach(function (title) {
-        var a = el("a", "shipped-badge", esc(title.name));
+        var a = el("a", "shipped-badge ext-link", esc(title.name));
         a.href = title.url;
-        a.target = "_blank";
-        a.rel = "noopener";
+        a.dataset.label = title.name;
         shippedRow.appendChild(a);
       });
       card.appendChild(shippedRow);
@@ -252,19 +284,25 @@
     panelsEl.appendChild(panel);
   });
 
-  /* scroll to a given 0-based index */
-  function scrollToExp(idx) {
-    panelsEl.scrollTo({ left: idx * panelsEl.offsetWidth, behavior: "smooth" });
-  }
+  /* intercept shipped-badge clicks → redirect modal */
+  panelsEl.addEventListener("click", function (ev) {
+    var a = ev.target.closest(".ext-link");
+    if (!a) return;
+    ev.preventDefault();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
 
-  /* sync tabs + arrows to current scroll position */
-  function syncExpUI() {
-    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
+  /* go to a 0-based index (no scroll — we use CSS translate) */
+  function goToExp(idx) {
     idx = Math.max(0, Math.min(total - 1, idx));
+    currentIdx = idx;
 
+    /* shift the track */
+    panelsEl.style.transform = "translateX(-" + (idx * 100) + "%)";
+
+    /* sync tab buttons */
     var btns = tabRow.querySelectorAll(".exp-tab-btn");
     btns.forEach(function (b, i) { b.classList.toggle("active", i === idx); });
-    // scroll active tab into view in the tab strip
     if (btns[idx]) btns[idx].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
 
     prevBtn.disabled = idx === 0;
@@ -272,89 +310,145 @@
     counter.textContent = (idx + 1) + " / " + total;
   }
 
-  /* initialise counter */
-  counter.textContent = "1 / " + total;
-  prevBtn.disabled = true;
+  /* initialise */
+  goToExp(0);
 
-  /* tab click → scroll */
+  /* tab click */
   tabRow.addEventListener("click", function (ev) {
     var btn = ev.target.closest(".exp-tab-btn");
     if (!btn) return;
-    var btns = Array.from(tabRow.querySelectorAll(".exp-tab-btn"));
-    scrollToExp(btns.indexOf(btn));
+    goToExp(parseInt(btn.dataset.idx, 10));
   });
 
   /* arrow buttons */
-  prevBtn.addEventListener("click", function () {
-    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
-    scrollToExp(Math.max(0, idx - 1));
-  });
+  prevBtn.addEventListener("click", function () { goToExp(currentIdx - 1); });
+  nextBtn.addEventListener("click", function () { goToExp(currentIdx + 1); });
 
-  nextBtn.addEventListener("click", function () {
-    var idx = Math.round(panelsEl.scrollLeft / Math.max(panelsEl.offsetWidth, 1));
-    scrollToExp(Math.min(total - 1, idx + 1));
-  });
-
-  /* sync on scroll (debounced) */
-  var scrollTimer;
-  panelsEl.addEventListener("scroll", function () {
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(syncExpUI, 60);
-  });
+  /* touch / swipe support */
+  var touchStartX = null;
+  panelsEl.addEventListener("touchstart", function (ev) {
+    touchStartX = ev.touches[0].clientX;
+  }, { passive: true });
+  panelsEl.addEventListener("touchend", function (ev) {
+    if (touchStartX === null) return;
+    var dx = ev.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    if (Math.abs(dx) > 40) goToExp(currentIdx + (dx < 0 ? 1 : -1));
+  }, { passive: true });
 
   /* ── PROJECTS ─────────────────────────────────────────── */
   var grid = document.getElementById("projects-grid");
+
   d.projects.forEach(function (proj) {
     var card = el("div", "proj-card");
+    card.dataset.projId = proj.id;
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", "View details for " + proj.name);
     card.appendChild(el("div", "proj-name", esc(proj.name)));
     card.appendChild(el("div", "proj-stack", esc(proj.stack)));
     card.appendChild(el("p",   "proj-desc",  esc(proj.description)));
     if (proj.links && proj.links.length) {
-      var links = el("div", "proj-links");
-      proj.links.forEach(function (lnk) {
-        var a = el("a", "proj-link", esc(lnk.label));
-        a.href = lnk.url;
-        a.dataset.label = lnk.label;
-        links.appendChild(a);
-      });
-      card.appendChild(links);
+      var hint = el("div", "proj-hint", "Click for details &amp; links →");
+      card.appendChild(hint);
+    } else {
+      var hint = el("div", "proj-hint", "Click for details →");
+      card.appendChild(hint);
     }
     grid.appendChild(card);
   });
 
-  /* ── REDIRECT MODAL ───────────────────────────────────── */
-  var modal      = document.getElementById("redirect-modal");
-  var modalName  = document.getElementById("modal-dest-name");
-  var modalConfirm = document.getElementById("modal-confirm");
-  var modalCancel  = document.getElementById("modal-cancel");
+  /* ── PROJECT BOTTOM SHEET ─────────────────────────────── */
+  var sheetOverlay = document.getElementById("proj-sheet-overlay");
+  var sheetClose   = document.getElementById("sheet-close");
+  var sheetTitle   = document.getElementById("sheet-title");
+  var sheetStack   = document.getElementById("sheet-stack");
+  var sheetDesc    = document.getElementById("sheet-desc");
+  var sheetDetails = document.getElementById("sheet-details");
+  var sheetLinks   = document.getElementById("sheet-links");
+  var sheetImgWrap = document.getElementById("sheet-image-wrap");
 
-  /* intercept all .proj-link clicks */
+  function openSheet(projId) {
+    var proj = d.projects.find(function (p) { return p.id === projId; });
+    if (!proj) return;
+
+    sheetTitle.textContent = proj.name;
+    sheetStack.textContent = proj.stack;
+    sheetDesc.textContent  = proj.description;
+
+    /* image */
+    sheetImgWrap.innerHTML = "";
+    if (proj.image) {
+      var img = document.createElement("img");
+      img.src = proj.image;
+      img.alt = proj.name + " preview";
+      img.className = "sheet-img";
+      sheetImgWrap.appendChild(img);
+    }
+
+    /* details */
+    sheetDetails.innerHTML = "";
+    if (proj.details && proj.details.length) {
+      proj.details.forEach(function (d) {
+        sheetDetails.appendChild(el("li", null, esc(d)));
+      });
+    }
+
+    /* links */
+    sheetLinks.innerHTML = "";
+    if (proj.links && proj.links.length) {
+      proj.links.forEach(function (lnk) {
+        var a = el("a", "btn btn-gold sheet-ext-link", esc(lnk.label) + " →");
+        a.href = lnk.url;
+        a.dataset.label = lnk.label;
+        sheetLinks.appendChild(a);
+      });
+    }
+
+    sheetOverlay.removeAttribute("hidden");
+    document.body.classList.add("sheet-open");
+    sheetClose.focus();
+  }
+
+  function closeSheet() {
+    sheetOverlay.setAttribute("hidden", "");
+    document.body.classList.remove("sheet-open");
+  }
+
+  /* project card click / keyboard */
   grid.addEventListener("click", function (ev) {
-    var link = ev.target.closest(".proj-link");
-    if (!link) return;
+    var card = ev.target.closest(".proj-card");
+    if (!card) return;
+    openSheet(card.dataset.projId);
+  });
+
+  grid.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") {
+      var card = ev.target.closest(".proj-card");
+      if (card) { ev.preventDefault(); openSheet(card.dataset.projId); }
+    }
+  });
+
+  sheetClose.addEventListener("click", closeSheet);
+  sheetOverlay.addEventListener("click", function (ev) {
+    if (ev.target === sheetOverlay) closeSheet();
+  });
+
+  /* redirect modal for sheet links */
+  sheetOverlay.addEventListener("click", function (ev) {
+    var a = ev.target.closest(".sheet-ext-link");
+    if (!a) return;
     ev.preventDefault();
-    modalName.textContent = link.dataset.label || link.textContent;
-    modalConfirm.href = link.href;
-    modal.removeAttribute("hidden");
+    closeSheet();
+    openRedirect(a.href, a.dataset.label || a.textContent);
   });
 
-  modalCancel.addEventListener("click", function () {
-    modal.setAttribute("hidden", "");
-  });
-
-  /* close on backdrop click */
-  modal.addEventListener("click", function (ev) {
-    if (ev.target === modal) modal.setAttribute("hidden", "");
-  });
-
-  /* close on Escape */
+  /* ── KEYBOARD GLOBAL ──────────────────────────────────── */
   document.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape") modal.setAttribute("hidden", "");
-  });
-
-  /* after confirm click, close modal */
-  modalConfirm.addEventListener("click", function () {
-    modal.setAttribute("hidden", "");
+    if (ev.key === "Escape") {
+      if (!sheetOverlay.hasAttribute("hidden")) { closeSheet(); return; }
+      if (!modal.hasAttribute("hidden"))        { closeRedirect(); }
+    }
   });
 
   /* ── SITE NAV (section switcher) ──────────────────────── */

@@ -112,7 +112,7 @@
     </p>
     <div class="modal-actions">
       <button id="modal-cancel" class="btn">Cancel</button>
-      <a id="modal-confirm" class="btn btn-gold" target="_blank" rel="noopener">Go there →</a>
+      <a id="modal-confirm" class="btn btn-neon" target="_blank" rel="noopener">Go there →</a>
     </div>
   </div>
 </div>
@@ -245,7 +245,7 @@
   if (d.contact.itch)     makeHeroLink(d.contact.itch,     "itch.io");
 
   if (d.contact.hireMe) {
-    var hireBtn = el("a", "btn btn-gold");
+    var hireBtn = el("a", "btn btn-neon");
     hireBtn.href = d.contact.hireMe;
     hireBtn.dataset.label = "Hire Me";
     hireBtn.innerHTML = "✉ Hire Me";
@@ -477,7 +477,7 @@
     sheetLinks.innerHTML = "";
     if (proj.links && proj.links.length) {
       proj.links.forEach(function (lnk) {
-        var a = el("a", "btn btn-gold sheet-ext-link", esc(lnk.label) + " →");
+        var a = el("a", "btn btn-neon sheet-ext-link", esc(lnk.label) + " →");
         a.href = lnk.url;
         a.dataset.label = lnk.label;
         sheetLinks.appendChild(a);

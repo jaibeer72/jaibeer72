@@ -668,6 +668,10 @@
     navTabs.forEach(function (t) {
       t.classList.toggle("active", t.dataset.section === sectionId);
     });
+    /* only paint the active section — hides off-screen sections to prevent overflow issues */
+    document.querySelectorAll(".site-section").forEach(function (s) {
+      s.classList.toggle("is-visible", s.id === sectionId);
+    });
   }
 
   /* initialise sections to "about" without triggering the slide transition */

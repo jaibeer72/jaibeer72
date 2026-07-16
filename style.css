@@ -402,6 +402,11 @@ section { padding: 4rem 0; }
   flex-shrink: 0;
   min-width: 0;
   box-sizing: border-box;
+  visibility: hidden;
+}
+
+.site-section.is-visible {
+  visibility: visible;
 }
 
 /* ---------- summary box ------------------------------------ */

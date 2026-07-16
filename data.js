@@ -80,7 +80,7 @@ const RESUME_DATA = {
       tag: "ZS · 2024",
       stack: ".NET, Angular, Spring Boot, AWS Lambda, ECR, SQL, Lombok",
       highlights: [
-        "Designed an endpoint-integration framework for .NET backends, lifting unit-test coverage from 0 % to 60 %.",
+        "Designed an endpoint-integration framework for .NET backends, lifting unit-test coverage from 0% to 60%.",
         "Led an Angular front-end bug bash that resolved 10+ high-priority defects and measurably improved user satisfaction.",
         "Introduced E2E testing with WebApplicationFactory mocking and multi-config builder-pattern support.",
         "Debugged slow SQL queries to slash a critical API's response time from 3+ seconds to 1.5 seconds.",

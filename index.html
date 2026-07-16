@@ -483,7 +483,16 @@
     /* sync tab buttons */
     var btns = tabRow.querySelectorAll(".exp-tab-btn");
     btns.forEach(function (b, i) { b.classList.toggle("active", i === idx); });
-    if (btns[idx]) btns[idx].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    if (btns[idx]) {
+      /* keep tab-centering scroll constrained to the tab row (avoid page-level horizontal shifts) */
+      var targetBtn = btns[idx];
+      var targetLeft = targetBtn.offsetLeft - (tabRow.clientWidth - targetBtn.offsetWidth) / 2;
+      var maxLeft = Math.max(0, tabRow.scrollWidth - tabRow.clientWidth);
+      tabRow.scrollTo({
+        left: Math.max(0, Math.min(maxLeft, targetLeft)),
+        behavior: "smooth"
+      });
+    }
 
     prevBtn.disabled = idx === 0;
     nextBtn.disabled = idx === total - 1;

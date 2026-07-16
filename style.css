@@ -185,6 +185,26 @@ section { padding: 4rem 0; }
   margin-bottom: 3rem;
 }
 
+/* keyword cross-links inside the summary */
+.kw-link {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--gold);
+  cursor: pointer;
+  border-bottom: 1px dotted var(--gold);
+  transition: color var(--transition), border-color var(--transition);
+  line-height: inherit;
+}
+
+.kw-link:hover {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold-light);
+}
+
 /* ---------- skills grid ------------------------------------ */
 .skills-grid {
   display: grid;
@@ -526,7 +546,13 @@ section { padding: 4rem 0; }
 
 .sheet-overlay[hidden] { display: none; }
 
-body.sheet-open { overflow: hidden; }
+/* iOS Safari scroll-lock: position:fixed keeps the body still while
+   allowing the sheet-body element itself to scroll via touch */
+body.sheet-open {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
 
 .proj-sheet {
   background: var(--surface);
@@ -592,6 +618,8 @@ body.sheet-open { overflow: hidden; }
 .sheet-body {
   padding: 1.5rem 1.75rem 2rem;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* momentum scroll on iOS Safari */
+  overscroll-behavior: contain;      /* prevent scroll chaining to body */
   display: flex;
   flex-direction: column;
   gap: 1.25rem;

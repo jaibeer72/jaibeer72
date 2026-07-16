@@ -17,6 +17,23 @@ const RESUME_DATA = {
     hireMe: "https://www.linkedin.com/in/jaibeer72",
   },
 
+  /**
+   * keyword → section cross-links shown in the summary box.
+   * type: "experience" navigates the experience carousel to that entry.
+   * type: "project" switches to Projects and opens the detail sheet.
+   * Order matters: longer / more-specific entries must come first.
+   */
+  keywords: [
+    { word: "Nintendo Switch", type: "experience", id: "ubisoft"   },
+    { word: "Ubisoft",         type: "experience", id: "ubisoft"   },
+    { word: "Vulkan",          type: "project",    id: "vulkangfx" },
+    { word: "Android",         type: "experience", id: "noon"      },
+    { word: "Noon",            type: "experience", id: "noon"      },
+    { word: "C++",             type: "experience", id: "ubisoft"   },
+    { word: "PS5",             type: "experience", id: "ubisoft"   },
+    { word: "ZS",              type: "experience", id: "zs"        },
+  ],
+
   skills: [
     { label: "Languages", value: "C++, C#, JavaScript, Python, GLSL, Java" },
     { label: "Game Dev", value: "Unity, Unreal Engine, Cocos Creator" },
@@ -211,9 +228,8 @@ const RESUME_DATA = {
         "Live data from The Movie Database (TMDB) API — posters, trailers, cast, and ratings.",
         "Dual database implementation: PostgreSQL (relational) vs MongoDB (document) for user watchlists and ratings.",
         "Comparative report analyses query performance and schema flexibility across both paradigms for recommendation workloads.",
-        "GitHub: jaibeer72/netflix-clone-sem1",
       ],
-      links: [],
+      links: [{ label: "GitHub", url: "https://github.com/jaibeer72/netflix-clone-sem1" }],
     },
     {
       id: "spacebound",

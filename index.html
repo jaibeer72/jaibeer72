@@ -158,6 +158,52 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* ── keyword cross-link helpers ──────────────────────── */
+  function escRe(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function linkify(text) {
+    if (!d.keywords || !d.keywords.length) return esc(text);
+    /* longest keywords first so "Nintendo Switch" wins over "Switch" */
+    var sorted = d.keywords.slice().sort(function (a, b) {
+      return b.word.length - a.word.length;
+    });
+    var result = esc(text);
+    sorted.forEach(function (kw) {
+      var safe = esc(kw.word);
+      var re   = new RegExp(escRe(safe), 'g');
+      result   = result.replace(re,
+        '<button class="kw-link" data-kw-type="' + esc(kw.type) +
+        '" data-kw-id="' + esc(kw.id) + '">' + safe + '</button>');
+    });
+    return result;
+  }
+
+  /* switches tabs + makes the target section visible */
+  function showSection(sectionId) {
+    document.querySelectorAll(".nav-tab").forEach(function (t) {
+      t.classList.toggle("active", t.dataset.section === sectionId);
+    });
+    document.querySelectorAll(".site-section").forEach(function (s) {
+      s.classList.toggle("visible", s.id === sectionId);
+    });
+  }
+
+  /* keyword click → navigate to the linked experience or project */
+  function navigateTo(type, id) {
+    if (type === "project") {
+      showSection("projects");
+      openSheet(id);
+    } else if (type === "experience") {
+      showSection("experience");
+      var idx = 0;
+      d.experience.forEach(function (exp, i) { if (exp.id === id) idx = i; });
+      goToExp(idx);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   /* ── REDIRECT MODAL (shared) ──────────────────────────── */
   var modal        = document.getElementById("redirect-modal");
   var modalName    = document.getElementById("modal-dest-name");
@@ -214,7 +260,13 @@
   });
 
   /* ── ABOUT ────────────────────────────────────────────── */
-  document.getElementById("summary-box").textContent = d.summary;
+  var summaryBox = document.getElementById("summary-box");
+  summaryBox.innerHTML = linkify(d.summary);
+  summaryBox.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".kw-link");
+    if (!btn) return;
+    navigateTo(btn.dataset.kwType, btn.dataset.kwId);
+  });
 
   var sg = document.getElementById("skills-grid");
   d.skills.forEach(function (s) {
@@ -378,6 +430,7 @@
   var sheetDetails = document.getElementById("sheet-details");
   var sheetLinks   = document.getElementById("sheet-links");
   var sheetImgWrap = document.getElementById("sheet-image-wrap");
+  var savedScrollY = 0;
 
   function openSheet(projId) {
     var proj = d.projects.find(function (p) { return p.id === projId; });
@@ -417,6 +470,9 @@
     }
 
     sheetOverlay.removeAttribute("hidden");
+    /* iOS Safari scroll-lock: fix body at current scroll position */
+    savedScrollY = window.pageYOffset;
+    document.body.style.top = '-' + savedScrollY + 'px';
     document.body.classList.add("sheet-open");
     sheetClose.focus();
   }
@@ -424,6 +480,8 @@
   function closeSheet() {
     sheetOverlay.setAttribute("hidden", "");
     document.body.classList.remove("sheet-open");
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
   }
 
   /* project card click / keyboard */
@@ -468,11 +526,7 @@
 
   navTabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
-      navTabs.forEach(function (t) { t.classList.remove("active"); });
-      sections.forEach(function (s) { s.classList.remove("visible"); });
-      tab.classList.add("active");
-      var target = document.getElementById(tab.dataset.section);
-      if (target) target.classList.add("visible");
+      showSection(tab.dataset.section);
     });
   });
 

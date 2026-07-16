@@ -39,9 +39,11 @@
 
 <!-- ===================== MAIN ===================== -->
 <main>
+<div class="sections-viewport">
+<div id="sections-track" class="sections-track">
 
   <!-- ---- ABOUT ---- -->
-  <section id="about" class="site-section visible">
+  <section id="about" class="site-section">
     <div class="container">
       <p class="section-label">Professional Summary</p>
       <div class="summary-box" id="summary-box"><!-- js --></div>
@@ -89,6 +91,8 @@
     </div>
   </section>
 
+</div><!-- /sections-track -->
+</div><!-- /sections-viewport -->
 </main>
 
 <!-- ===================== FOOTER ===================== -->
@@ -180,15 +184,7 @@
     return result;
   }
 
-  /* switches tabs + makes the target section visible */
-  function showSection(sectionId) {
-    document.querySelectorAll(".nav-tab").forEach(function (t) {
-      t.classList.toggle("active", t.dataset.section === sectionId);
-    });
-    document.querySelectorAll(".site-section").forEach(function (s) {
-      s.classList.toggle("visible", s.id === sectionId);
-    });
-  }
+  /* switches tabs + makes the target section visible — defined in SITE NAV block below */
 
   /* keyword click → navigate to the linked experience or project */
   function navigateTo(type, id) {
@@ -401,14 +397,14 @@
     if (touchStartX === null) return;
     var dx = ev.touches[0].clientX - touchStartX;
     var dy = ev.touches[0].clientY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy)) ev.preventDefault();
+    if (Math.abs(dx) > Math.abs(dy)) { ev.preventDefault(); ev.stopPropagation(); }
   }, { passive: false });
   carouselViewport.addEventListener("touchend", function (ev) {
     if (touchStartX === null) return;
     var dx = ev.changedTouches[0].clientX - touchStartX;
     touchStartX = null;
     touchStartY = null;
-    if (Math.abs(dx) > 40) goToExp(currentIdx + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 40) { ev.stopPropagation(); goToExp(currentIdx + (dx < 0 ? 1 : -1)); }
   }, { passive: true });
   carouselViewport.addEventListener("touchcancel", function () {
     touchStartX = null;
@@ -537,14 +533,56 @@
   });
 
   /* ── SITE NAV (section switcher) ──────────────────────── */
-  var navTabs  = document.querySelectorAll(".nav-tab");
-  var sections = document.querySelectorAll(".site-section");
+  var navTabs      = document.querySelectorAll(".nav-tab");
+  var sectionOrder = ["about", "experience", "projects"];
+  var sectionsTrack = document.getElementById("sections-track");
+  var currentSectionIdx = 0;
+
+  function showSection(sectionId) {
+    var idx = sectionOrder.indexOf(sectionId);
+    if (idx === -1) return;
+    currentSectionIdx = idx;
+    sectionsTrack.style.transform = "translateX(-" + (idx * 100) + "%)";
+    navTabs.forEach(function (t) {
+      t.classList.toggle("active", t.dataset.section === sectionId);
+    });
+  }
 
   navTabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
       showSection(tab.dataset.section);
     });
   });
+
+  /* section swipe support */
+  var secTouchX = null;
+  var secTouchY = null;
+  var sectionsViewport = document.querySelector(".sections-viewport");
+  sectionsViewport.addEventListener("touchstart", function (ev) {
+    secTouchX = ev.touches[0].clientX;
+    secTouchY = ev.touches[0].clientY;
+  }, { passive: true });
+  sectionsViewport.addEventListener("touchmove", function (ev) {
+    if (secTouchX === null) return;
+    var dx = ev.touches[0].clientX - secTouchX;
+    var dy = ev.touches[0].clientY - secTouchY;
+    if (Math.abs(dx) > Math.abs(dy)) ev.preventDefault();
+  }, { passive: false });
+  sectionsViewport.addEventListener("touchend", function (ev) {
+    if (secTouchX === null) return;
+    var dx = ev.changedTouches[0].clientX - secTouchX;
+    secTouchX = null;
+    secTouchY = null;
+    if (Math.abs(dx) > 40) {
+      var newIdx = Math.max(0, Math.min(sectionOrder.length - 1,
+        currentSectionIdx + (dx < 0 ? 1 : -1)));
+      showSection(sectionOrder[newIdx]);
+    }
+  }, { passive: true });
+  sectionsViewport.addEventListener("touchcancel", function () {
+    secTouchX = null;
+    secTouchY = null;
+  }, { passive: true });
 
   /* ── FOOTER ───────────────────────────────────────────── */
   document.getElementById("footer-text").textContent =

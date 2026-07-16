@@ -21,7 +21,10 @@
         <p class="hero-title" id="hero-title"><!-- js --></p>
         <p class="hero-tagline" id="hero-tagline"><!-- js --></p>
       </div>
-      <div class="hero-links" id="hero-links"><!-- js --></div>
+      <div class="hero-right">
+        <div class="hero-links" id="hero-links"><!-- js --></div>
+        <button id="ai-hire-btn" class="btn btn-ai" aria-label="Ask AI why you should hire me">🤖 Ask AI — Why Hire Me?</button>
+      </div>
     </div>
   </div>
 </header>
@@ -117,6 +120,21 @@
     <div class="modal-actions">
       <button id="modal-cancel" class="btn">Cancel</button>
       <a id="modal-confirm" class="btn btn-neon" target="_blank" rel="noopener">Go there →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AI HIRE ME MODAL ===================== -->
+<div id="ai-modal" class="modal-overlay" hidden>
+  <div class="modal-box ai-modal-box">
+    <p class="modal-title">🤖 Ask AI — Why Hire Me?</p>
+    <p class="modal-body">
+      Choose your AI assistant. A concise candidate brief will be copied to your clipboard — just paste it to start the conversation.
+    </p>
+    <div class="ai-btn-grid" id="ai-btn-grid"><!-- js --></div>
+    <p class="ai-copied-msg" id="ai-copied-msg" hidden>✓ Prompt copied to clipboard! Paste it in the chat to begin.</p>
+    <div class="modal-actions">
+      <button id="ai-modal-cancel" class="btn">Close</button>
     </div>
   </div>
 </div>
@@ -255,7 +273,110 @@
     openRedirect(a.href, a.dataset.label || a.textContent);
   });
 
-  /* ── ABOUT ────────────────────────────────────────────── */
+  /* ── ASK AI — WHY HIRE ME ─────────────────────────────── */
+  var AI_OPTIONS = [
+    { label: "ChatGPT",    icon: "🤖", url: "https://chat.openai.com/"         },
+    { label: "Claude",     icon: "✦",  url: "https://claude.ai/new"             },
+    { label: "Gemini",     icon: "✧",  url: "https://gemini.google.com/app"     },
+    { label: "Perplexity", icon: "⚡", url: "https://www.perplexity.ai/"        },
+    { label: "Grok",       icon: "𝕏",  url: "https://grok.com/"                },
+    { label: "Copilot",    icon: "◈",  url: "https://copilot.microsoft.com/"   },
+  ];
+
+  function buildAiPrompt() {
+    var lines = [];
+    lines.push("You are reviewing a software engineer candidate. Here is a concise brief:\n");
+    lines.push("## " + d.name + " — " + d.title);
+    lines.push(d.tagline + "\n");
+    lines.push("**Summary:** " + d.summary + "\n");
+
+    lines.push("**Skills:**");
+    d.skills.forEach(function (s) { lines.push("• " + s.label + ": " + s.value); });
+    lines.push("");
+
+    lines.push("**Experience (newest → oldest):**");
+    d.experience.forEach(function (exp) {
+      lines.push("• " + exp.role + " @ " + exp.company + " (" + exp.period + ")");
+      exp.highlights.slice(0, 2).forEach(function (h) { lines.push("  – " + h); });
+    });
+    lines.push("");
+
+    lines.push("**Key Projects:**");
+    d.projects.forEach(function (p) {
+      lines.push("• " + p.name + " [" + p.stack + "]: " + p.description);
+    });
+    lines.push("");
+
+    lines.push("**Education:**");
+    d.education.forEach(function (e) {
+      lines.push("• " + e.degree + ", " + e.institution + " (" + e.period + ")");
+    });
+    lines.push("");
+
+    lines.push("**Certifications:** " + d.certifications.join(", "));
+    lines.push("\nPlease start by asking: \"What would you like to know about this candidate?\"");
+    return lines.join("\n");
+  }
+
+  var aiModal      = document.getElementById("ai-modal");
+  var aiGrid       = document.getElementById("ai-btn-grid");
+  var aiCopiedMsg  = document.getElementById("ai-copied-msg");
+  var aiCancelBtn  = document.getElementById("ai-modal-cancel");
+
+  /* populate AI option buttons once */
+  AI_OPTIONS.forEach(function (opt) {
+    var btn = el("button", "ai-option-btn");
+    btn.dataset.aiUrl = opt.url;
+    btn.innerHTML =
+      '<span class="ai-icon" aria-hidden="true">' + opt.icon + '</span>' +
+      esc(opt.label);
+    aiGrid.appendChild(btn);
+  });
+
+  function openAiModal() {
+    aiCopiedMsg.setAttribute("hidden", "");
+    aiModal.removeAttribute("hidden");
+  }
+  function closeAiModal() { aiModal.setAttribute("hidden", ""); }
+
+  document.getElementById("ai-hire-btn").addEventListener("click", openAiModal);
+  aiCancelBtn.addEventListener("click", closeAiModal);
+  aiModal.addEventListener("click", function (ev) {
+    if (ev.target === aiModal) closeAiModal();
+  });
+
+  aiGrid.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".ai-option-btn");
+    if (!btn) return;
+    var prompt = buildAiPrompt();
+    var url    = btn.dataset.aiUrl;
+
+    function afterCopy() {
+      aiCopiedMsg.removeAttribute("hidden");
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function fallbackCopy() {
+      /* execCommand fallback for older browsers / blocked clipboard API */
+      var ta = document.createElement("textarea");
+      ta.value = prompt;
+      ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) { /* silently skip */ }
+      document.body.removeChild(ta);
+      afterCopy();
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(prompt).then(afterCopy, fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  });
+
+
   var summaryBox = document.getElementById("summary-box");
   summaryBox.innerHTML = linkify(d.summary);
   summaryBox.addEventListener("click", function (ev) {
@@ -528,6 +649,7 @@
   document.addEventListener("keydown", function (ev) {
     if (ev.key === "Escape") {
       if (!sheetOverlay.hasAttribute("hidden")) { closeSheet(); return; }
+      if (!aiModal.hasAttribute("hidden"))      { closeAiModal(); return; }
       if (!modal.hasAttribute("hidden"))        { closeRedirect(); }
     }
   });

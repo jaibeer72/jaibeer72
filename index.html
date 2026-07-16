@@ -180,6 +180,13 @@
       .replace(/"/g, "&quot;");
   }
 
+  function runEdgeBounce(target, direction) {
+    var cls = direction === "left" ? "edge-bounce-left" : "edge-bounce-right";
+    target.classList.remove("edge-bounce-left", "edge-bounce-right");
+    void target.offsetWidth;
+    target.classList.add(cls);
+  }
+
   function attachHorizontalEdgeBounce(scroller) {
     if (!scroller) return;
     var touchStartX = null;
@@ -198,11 +205,7 @@
 
     function bounce(direction) {
       if (!hasOverflow()) return;
-      var cls = direction === "left" ? "edge-bounce-left" : "edge-bounce-right";
-      scroller.classList.remove("edge-bounce-left", "edge-bounce-right");
-      requestAnimationFrame(function () {
-        scroller.classList.add(cls);
-      });
+      runEdgeBounce(scroller, direction);
     }
 
     scroller.addEventListener("animationend", function () {
@@ -590,7 +593,19 @@
     var dx = ev.changedTouches[0].clientX - touchStartX;
     touchStartX = null;
     touchStartY = null;
-    if (Math.abs(dx) > 40) { ev.stopPropagation(); goToExp(currentIdx + (dx < 0 ? 1 : -1)); }
+    if (Math.abs(dx) > 40) {
+      ev.stopPropagation();
+      var nextIdx = currentIdx + (dx < 0 ? 1 : -1);
+      if (nextIdx < 0) {
+        runEdgeBounce(carouselViewport, "left");
+        return;
+      }
+      if (nextIdx > total - 1) {
+        runEdgeBounce(carouselViewport, "right");
+        return;
+      }
+      goToExp(nextIdx);
+    }
   }, { passive: true });
   carouselViewport.addEventListener("touchcancel", function () {
     touchStartX = null;

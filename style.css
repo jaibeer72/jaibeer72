@@ -344,6 +344,8 @@ section { padding: 4rem 0; }
   background: rgba(4, 4, 12, 0.94);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  /* fill behind iPhone notch / Dynamic Island when the nav sticks */
+  padding-top: env(safe-area-inset-top);
 }
 
 .nav-inner {

@@ -352,9 +352,27 @@ section { padding: 4rem 0; }
   display: flex;
   gap: 0;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  will-change: transform;
 }
 .nav-inner::-webkit-scrollbar { display: none; }
+
+.edge-bounce-left  { animation: edge-bounce-left 220ms ease-out; }
+.edge-bounce-right { animation: edge-bounce-right 220ms ease-out; }
+
+@keyframes edge-bounce-left {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes edge-bounce-right {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(-8px); }
+  100% { transform: translateX(0); }
+}
 
 .nav-tab {
   padding: 1rem 1.4rem;
@@ -549,10 +567,13 @@ section { padding: 4rem 0; }
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
   scrollbar-width: thin;
   scrollbar-color: var(--neon-dim) transparent;
+  will-change: transform;
 }
 .exp-tab-row::-webkit-scrollbar { height: 3px; }
 .exp-tab-row::-webkit-scrollbar-track { background: transparent; }

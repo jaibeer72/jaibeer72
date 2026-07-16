@@ -180,6 +180,59 @@
       .replace(/"/g, "&quot;");
   }
 
+  function attachHorizontalEdgeBounce(scroller) {
+    if (!scroller) return;
+    var touchStartX = null;
+
+    function hasOverflow() {
+      return scroller.scrollWidth > scroller.clientWidth + 1;
+    }
+
+    function atLeftEdge() {
+      return scroller.scrollLeft <= 1;
+    }
+
+    function atRightEdge() {
+      return scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1;
+    }
+
+    function bounce(direction) {
+      if (!hasOverflow()) return;
+      var cls = direction === "left" ? "edge-bounce-left" : "edge-bounce-right";
+      scroller.classList.remove("edge-bounce-left", "edge-bounce-right");
+      requestAnimationFrame(function () {
+        scroller.classList.add(cls);
+      });
+    }
+
+    scroller.addEventListener("animationend", function () {
+      scroller.classList.remove("edge-bounce-left", "edge-bounce-right");
+    });
+
+    scroller.addEventListener("wheel", function (ev) {
+      var axis = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : (ev.shiftKey ? ev.deltaY : 0);
+      if (axis < 0 && atLeftEdge()) bounce("left");
+      if (axis > 0 && atRightEdge()) bounce("right");
+    }, { passive: true });
+
+    scroller.addEventListener("touchstart", function (ev) {
+      touchStartX = ev.touches[0].clientX;
+    }, { passive: true });
+
+    scroller.addEventListener("touchend", function (ev) {
+      if (touchStartX === null) return;
+      var dx = ev.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if (Math.abs(dx) < 30) return;
+      if (dx > 0 && atLeftEdge()) bounce("left");
+      if (dx < 0 && atRightEdge()) bounce("right");
+    }, { passive: true });
+
+    scroller.addEventListener("touchcancel", function () {
+      touchStartX = null;
+    }, { passive: true });
+  }
+
   /* ── keyword cross-link helpers ──────────────────────── */
   function escRe(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -415,6 +468,9 @@
   var counter  = document.getElementById("exp-counter");
   var total    = d.experience.length;
   var currentIdx = 0;
+  var navInner = document.querySelector(".nav-inner");
+  attachHorizontalEdgeBounce(tabRow);
+  attachHorizontalEdgeBounce(navInner);
 
   d.experience.forEach(function (exp, idx) {
     /* tab button */

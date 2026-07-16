@@ -739,10 +739,16 @@
   var sectionOrder = ["about", "experience", "projects"];
   var sectionsTrack = document.getElementById("sections-track");
   var currentSectionIdx = 0;
+  var sectionScrollY = {};   /* remembers scroll position per section */
 
   function showSection(sectionId) {
     var idx = sectionOrder.indexOf(sectionId);
     if (idx === -1) return;
+
+    /* save scroll position for the section we are leaving (not experience — it always starts at top) */
+    var leavingId = sectionOrder[currentSectionIdx];
+    if (leavingId && leavingId !== "experience") sectionScrollY[leavingId] = window.scrollY;
+
     currentSectionIdx = idx;
     sectionsTrack.style.transform = "translateX(-" + (idx * 100) + "%)";
     navTabs.forEach(function (t) {
@@ -752,6 +758,10 @@
     document.querySelectorAll(".site-section").forEach(function (s) {
       s.classList.toggle("is-visible", s.id === sectionId);
     });
+
+    /* restore saved scroll for the new section; experience always goes to the top */
+    var targetY = (sectionId === "experience") ? 0 : (sectionScrollY[sectionId] || 0);
+    window.scrollTo({ top: targetY, behavior: "auto" });
   }
 
   /* initialise sections to "about" without triggering the slide transition */

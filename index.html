@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jaibeer Singh — Portfolio</title>
+  <meta name="description" content="Senior Software Engineer — C++, Graphics, Backend, Games" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <h1 class="hero-name" id="hero-name"><!-- js --></h1>
+        <p class="hero-title" id="hero-title"><!-- js --></p>
+        <p class="hero-tagline" id="hero-tagline"><!-- js --></p>
+      </div>
+      <div class="hero-links" id="hero-links"><!-- js --></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== SITE NAV ===================== -->
+<nav id="site-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <button class="nav-tab active" data-section="about">About</button>
+      <button class="nav-tab" data-section="experience">Experience</button>
+      <button class="nav-tab" data-section="projects">Projects</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+
+  <!-- ---- ABOUT ---- -->
+  <section id="about" class="site-section visible">
+    <div class="container">
+      <p class="section-label">Professional Summary</p>
+      <div class="summary-box" id="summary-box"><!-- js --></div>
+
+      <p class="section-label">Technical Skills</p>
+      <div class="skills-grid" id="skills-grid"><!-- js --></div>
+
+      <p class="section-label">Education</p>
+      <div class="edu-list" id="edu-list"><!-- js --></div>
+
+      <p class="section-label" style="margin-top:2rem">Certifications</p>
+      <div class="cert-list" id="cert-list"><!-- js --></div>
+    </div>
+  </section>
+
+  <!-- ---- EXPERIENCE ---- -->
+  <section id="experience" class="site-section">
+    <div class="container">
+      <p class="section-label">Career Timeline</p>
+      <h2 class="section-title">Experience</h2>
+
+      <!-- tab row: newest → oldest -->
+      <div class="exp-tab-row" id="exp-tab-row"><!-- js --></div>
+
+      <!-- panels -->
+      <div id="exp-panels"><!-- js --></div>
+    </div>
+  </section>
+
+  <!-- ---- PROJECTS ---- -->
+  <section id="projects" class="site-section">
+    <div class="container">
+      <p class="section-label">Selected Work</p>
+      <h2 class="section-title">Projects</h2>
+      <div class="projects-grid" id="projects-grid"><!-- js --></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container">
+    <span id="footer-text"><!-- js --></span>
+  </div>
+</footer>
+
+<!-- data first, then renderer -->
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ── helpers ─────────────────────────────────────────── */
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /* ── HERO ─────────────────────────────────────────────── */
+  var d = RESUME_DATA;
+
+  document.getElementById("hero-name").innerHTML =
+    esc(d.name).replace(/(\S+)$/, "<span>$1</span>");
+  document.getElementById("hero-title").textContent = d.title;
+  document.getElementById("hero-tagline").textContent = d.tagline;
+
+  var linksEl = document.getElementById("hero-links");
+  if (d.contact.github) {
+    var gh = el("a", "btn");
+    gh.href = d.contact.github;
+    gh.target = "_blank";
+    gh.rel = "noopener";
+    gh.innerHTML = "GitHub";
+    linksEl.appendChild(gh);
+  }
+  if (d.contact.linkedin) {
+    var li = el("a", "btn");
+    li.href = d.contact.linkedin;
+    li.target = "_blank";
+    li.rel = "noopener";
+    li.innerHTML = "LinkedIn";
+    linksEl.appendChild(li);
+  }
+
+  /* ── ABOUT ────────────────────────────────────────────── */
+  document.getElementById("summary-box").textContent = d.summary;
+
+  var sg = document.getElementById("skills-grid");
+  d.skills.forEach(function (s) {
+    var row = el("div", "skill-row");
+    row.appendChild(el("span", "skill-label", esc(s.label)));
+    row.appendChild(el("span", "skill-value", esc(s.value)));
+    sg.appendChild(row);
+  });
+
+  var eduList = document.getElementById("edu-list");
+  d.education.forEach(function (e) {
+    var card = el("div", "edu-card");
+    card.appendChild(el("div", "edu-degree", esc(e.degree)));
+    card.appendChild(el("div", "edu-inst",   esc(e.institution)));
+    card.appendChild(el("div", "edu-period", esc(e.period)));
+    eduList.appendChild(card);
+  });
+
+  var certList = document.getElementById("cert-list");
+  d.certifications.forEach(function (c) {
+    certList.appendChild(el("span", "cert-chip", esc(c)));
+  });
+
+  /* ── EXPERIENCE ───────────────────────────────────────── */
+  var tabRow    = document.getElementById("exp-tab-row");
+  var panelsEl  = document.getElementById("exp-panels");
+
+  d.experience.forEach(function (exp, idx) {
+    /* tab button */
+    var btn = el("button", "exp-tab-btn" + (idx === 0 ? " active" : ""));
+    btn.dataset.target = exp.id;
+    btn.textContent = exp.tag;
+    tabRow.appendChild(btn);
+
+    /* panel */
+    var panel = el("div", "exp-panel" + (idx === 0 ? " active" : ""));
+    panel.id = "panel-" + exp.id;
+
+    var card = el("div", "exp-card");
+
+    // header row
+    var header = el("div", "exp-header");
+    var leftCol = el("div");
+    leftCol.appendChild(el("div", "exp-role", esc(exp.role)));
+    leftCol.appendChild(el("div", "exp-company", esc(exp.company)));
+    leftCol.appendChild(el("div", "exp-location", esc(exp.location)));
+    var rightCol = el("div", "exp-meta");
+    rightCol.textContent = exp.period;
+    header.appendChild(leftCol);
+    header.appendChild(rightCol);
+    card.appendChild(header);
+
+    card.appendChild(el("span", "exp-stack", esc(exp.stack)));
+
+    var ul = el("ul", "exp-highlights");
+    exp.highlights.forEach(function (h) {
+      ul.appendChild(el("li", null, esc(h)));
+    });
+    card.appendChild(ul);
+
+    panel.appendChild(card);
+    panelsEl.appendChild(panel);
+  });
+
+  /* tab click logic */
+  tabRow.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".exp-tab-btn");
+    if (!btn) return;
+    tabRow.querySelectorAll(".exp-tab-btn").forEach(function (b) { b.classList.remove("active"); });
+    panelsEl.querySelectorAll(".exp-panel").forEach(function (p) { p.classList.remove("active"); });
+    btn.classList.add("active");
+    var target = document.getElementById("panel-" + btn.dataset.target);
+    if (target) target.classList.add("active");
+  });
+
+  /* ── PROJECTS ─────────────────────────────────────────── */
+  var grid = document.getElementById("projects-grid");
+  d.projects.forEach(function (proj) {
+    var card = el("div", "proj-card");
+    card.appendChild(el("div", "proj-name", esc(proj.name)));
+    card.appendChild(el("div", "proj-stack", esc(proj.stack)));
+    card.appendChild(el("p",   "proj-desc",  esc(proj.description)));
+    if (proj.links && proj.links.length) {
+      var links = el("div", "proj-links");
+      proj.links.forEach(function (lnk) {
+        var a = el("a", "proj-link", esc(lnk.label));
+        a.href = lnk.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        links.appendChild(a);
+      });
+      card.appendChild(links);
+    }
+    grid.appendChild(card);
+  });
+
+  /* ── SITE NAV (section switcher) ──────────────────────── */
+  var navTabs  = document.querySelectorAll(".nav-tab");
+  var sections = document.querySelectorAll(".site-section");
+
+  navTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      navTabs.forEach(function (t) { t.classList.remove("active"); });
+      sections.forEach(function (s) { s.classList.remove("visible"); });
+      tab.classList.add("active");
+      var target = document.getElementById(tab.dataset.section);
+      if (target) target.classList.add("visible");
+    });
+  });
+
+  /* ── FOOTER ───────────────────────────────────────────── */
+  document.getElementById("footer-text").textContent =
+    d.name + " · " + new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>

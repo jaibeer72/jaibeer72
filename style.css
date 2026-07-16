@@ -487,6 +487,7 @@ section { padding: 4rem 0; }
   overflow: hidden;
   width: 100%;
   margin-bottom: 1rem;
+  touch-action: pan-y;
 }
 
 #exp-panels {
@@ -494,7 +495,6 @@ section { padding: 4rem 0; }
   width: 100%;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
-  touch-action: pan-y;
 }
 
 .exp-panel {

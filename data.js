@@ -189,6 +189,31 @@ extern "C" {
         "Optimised CDN delivery and integrated Google Cloud Storage for high-availability asset deployment.",
         "Drove a 12% overall improvement in performance metrics across the mobile game stack.",
       ],
+      stories: [
+        {
+          kicker: "Performance · Android",
+          title: "46% startup latency cut on legacy hardware",
+          context:
+            "Startup latency was the primary drop-off point on lower-end Android devices. The fix required profiling the full boot sequence, not just the obvious suspects.",
+          details: [
+            "Profiled the complete startup path across Cocos Creator and the React Native shell to isolate the real bottleneck.",
+            "Cut latency 46% through asset bundling reorganisation and lazy-load sequencing — no new hardware, no engine change.",
+            "Also drove a 12% overall mobile stack performance improvement through follow-on CDN and cache tuning.",
+          ],
+        },
+        {
+          kicker: "Backend · Scalability",
+          title: "Decoupling asset config from deploys with FastAPI + GCP",
+          context:
+            "The product team needed to push content changes without a full build cycle. I designed a server-side config pipeline that let them do exactly that.",
+          details: [
+            "Built Python FastAPI services backed by Google Cloud Storage so content could be updated live without redeployment.",
+            "Designed CDN delivery so high-traffic spikes could not degrade asset availability for the 800K+ user base.",
+            "Cut manual content update effort by 20% by moving configuration to server-driven payloads.",
+          ],
+        },
+      ],
+      relatedProjects: ["spacebound", "ar-shooter"],
     },
     {
       id: "zs",
@@ -206,6 +231,31 @@ extern "C" {
         "Streamlined serverless deployment of Spring Boot apps via AWS Lambda + ECR, shrinking Uber JARs to meet strict size limits.",
         "Reduced boilerplate across Spring Boot backends with Lombok, dramatically improving maintainability.",
       ],
+      stories: [
+        {
+          kicker: ".NET · Testing",
+          title: "0% → 60% test coverage in one sprint",
+          context:
+            "The codebase had zero tests and a team that had never written integration tests before. I introduced a structured framework so writing tests required almost no boilerplate.",
+          details: [
+            "Built an endpoint-integration framework using WebApplicationFactory that let the team add E2E tests with minimal setup.",
+            "Supported multi-config builder-pattern so tests could cover different app configurations without duplication.",
+            "Lifted coverage from 0% to 60% — giving the team confidence to refactor and add features without fear of silent regressions.",
+          ],
+        },
+        {
+          kicker: "SQL · Performance",
+          title: "Halving a critical API response time with query analysis",
+          context:
+            "A key API was consistently slow. Rather than caching the problem away, I traced it to the queries themselves.",
+          details: [
+            "Profiled the slow path to identify the specific query responsible for the 3 s tail latency.",
+            "Fixed join strategy and missing index to bring response time to 1.5 s without any application-layer changes.",
+            "Shrunk Spring Boot Lambda JARs to meet ECR size constraints by restructuring module dependencies.",
+          ],
+        },
+      ],
+      relatedProjects: ["protean", "netflix"],
     },
     {
       id: "reliance",
@@ -225,6 +275,20 @@ extern "C" {
         "Reduced server crashes by 15% through backend scalability hardening.",
         "Streamlined REST API and RPC implementation for efficient live-ops gameplay updates.",
       ],
+      stories: [
+        {
+          kicker: "Unity / C# · Live Title",
+          title: "Shipping live-ops features without breaking what's already live",
+          context:
+            "Live-ops titles can't afford downtime. Every change touches an active player base, so stability has to be maintained while the feature train keeps moving.",
+          details: [
+            "Hardened the Spring Boot backend behind American Dad! to cut server crash rate by 15%.",
+            "Strengthened the C# .NET client-server communication layer to handle edge cases in REST and RPC calls.",
+            "Retrofitted Git LFS for the art team — previously large assets were causing sync failures that blocked the whole pipeline.",
+          ],
+        },
+      ],
+      relatedProjects: ["ar-shooter", "spacebound"],
     },
     {
       id: "ubisoft",
@@ -246,6 +310,31 @@ extern "C" {
         "Co-designed and automated PS5 and Switch build pipelines with Jenkins and TeamCity, cutting deployment friction significantly.",
         "Mentored junior developers on coding best practices, raising the team's overall code quality.",
       ],
+      stories: [
+        {
+          kicker: "C++ · Memory Layout · Console",
+          title: "Memory budget management and data layout on PS5 and Switch",
+          context:
+            "Console certification requires precise memory control. The work was not just about using less memory — it was about understanding exactly how data is laid out in cache, what trips the platform compliance checker, and how to fix it.",
+          details: [
+            "Managed memory budgets across both Just Dance 2023 and Oddballers for PS5 and Nintendo Switch certification.",
+            "Optimised game memory layout — conscious struct alignment and access patterns — delivering a 20% improvement in profiled builds.",
+            "This is directly connected to the C++ / C# interop and marshalling work: understanding struct layout is the foundation of both.",
+          ],
+        },
+        {
+          kicker: "C++ / C# · Interop · Platform",
+          title: "P/Invoke and struct marshalling across native plugin boundaries",
+          context:
+            "At Ubisoft we used Unity C# on top of native C++ platform SDKs. Getting that boundary right required understanding the memory layout on both sides.",
+          details: [
+            "Used P/Invoke with carefully matched struct layouts to call into native C++ SDKs from Unity C# without corruption or leaks.",
+            "Verified correct calling conventions and struct packing to match what the Switch and PS5 SDKs expected.",
+            "Co-designed the Jenkins and TeamCity build pipelines so PS5 and Switch builds were fully automated and reproducible.",
+          ],
+        },
+      ],
+      relatedProjects: ["vulkangfx", "cpp-image-compression", "opengl"],
     },
     {
       id: "rythmos",
@@ -260,6 +349,20 @@ extern "C" {
         "Migrated graphics testing suite to Unity's Scriptable Render Pipeline (SRP), improving visual fidelity and test coverage.",
         "Built automation tools for performance and runtime testing, cutting QA cycles by 30%.",
       ],
+      stories: [
+        {
+          kicker: "Unity · Engine Internals · Consulting",
+          title: "Diagnosing deep Unity engine bugs under production pressure",
+          context:
+            "Consulting means debugging code you didn't write, usually under urgency. This pushed me to read engine internals and reason about rendering and scene management paths from first principles.",
+          details: [
+            "Diagnosed and fixed Unity3D engine-level bugs for enterprise clients — required tracing through rendering and scene graph code to find root causes.",
+            "Migrated a graphics testing suite from the legacy render pipeline to SRP/URP without visual regressions, which required understanding both pipeline architectures deeply.",
+            "Built automation tooling for performance and runtime testing that cut QA cycles by 30%.",
+          ],
+        },
+      ],
+      relatedProjects: ["ar-shooter", "opengl"],
     },
   ],
 

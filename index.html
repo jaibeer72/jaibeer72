@@ -358,36 +358,63 @@
 
   function buildAiPrompt() {
     var lines = [];
-    lines.push("You are reviewing a software engineer candidate. Here is a concise brief:\n");
+    lines.push("You are evaluating a software engineer. Here is a structured brief:\n");
     lines.push("## " + d.name + " — " + d.title);
-    lines.push(d.tagline + "\n");
-    lines.push("**Summary:** " + d.summary + "\n");
+    lines.push(d.tagline + " | 6 years shipping production code\n");
 
-    lines.push("**Skills:**");
-    d.skills.forEach(function (s) { lines.push("• " + s.label + ": " + s.value); });
+    /* Skills — one line per category, compact */
+    lines.push("**SKILLS:**");
+    d.skills.forEach(function (s) { lines.push(s.label + ": " + s.value); });
     lines.push("");
 
-    lines.push("**Experience (newest → oldest):**");
+    /* Experience — role@company(period) + 1 key win per role */
+    lines.push("**EXPERIENCE (newest → oldest):**");
     d.experience.forEach(function (exp) {
+      var win = exp.highlights[0] || "";
       lines.push("• " + exp.role + " @ " + exp.company + " (" + exp.period + ")");
-      exp.highlights.slice(0, 2).forEach(function (h) { lines.push("  – " + h); });
+      if (win) lines.push("  " + win);
     });
     lines.push("");
 
-    lines.push("**Key Projects:**");
+    /* Technical depth — one tight line per story pulled from experience and skills */
+    var depthLines = [];
+    d.experience.forEach(function (exp) {
+      if (!exp.stories) return;
+      exp.stories.forEach(function (story) {
+        if (story.details && story.details[0]) {
+          depthLines.push("– [" + exp.company + "] " + story.title + ": " + story.details[0]);
+        }
+      });
+    });
+    d.skills.forEach(function (s) {
+      if (!s.sheet || !s.sheet.stories) return;
+      s.sheet.stories.forEach(function (story) {
+        if (story.details && story.details[0]) {
+          depthLines.push("– [" + s.label + "] " + story.title + ": " + story.details[0]);
+        }
+      });
+    });
+    if (depthLines.length) {
+      lines.push("**TECHNICAL DEPTH:**");
+      depthLines.forEach(function (l) { lines.push(l); });
+      lines.push("");
+    }
+
+    /* Projects — name + stack only, no prose */
+    lines.push("**PROJECTS:**");
     d.projects.forEach(function (p) {
-      lines.push("• " + p.name + " [" + p.stack + "]: " + p.description);
+      lines.push("• " + p.name + " [" + p.stack + "]");
     });
     lines.push("");
 
-    lines.push("**Education:**");
-    d.education.forEach(function (e) {
-      lines.push("• " + e.degree + ", " + e.institution + " (" + e.period + ")");
-    });
-    lines.push("");
-
-    lines.push("**Certifications:** " + d.certifications.join(", "));
-    lines.push("\nPlease start by asking: \"What would you like to know about this candidate?\"");
+    /* Education compact */
+    lines.push("**EDUCATION:** " +
+      d.education.map(function (e) {
+        return e.degree.replace(/\s*—.*/, "") + " (" + e.institution.split(" ")[0] + " " + e.period.split("–")[1].trim() + ")";
+      }).join(" | ")
+    );
+    lines.push("**CERTS:** " + d.certifications.join(", "));
+    lines.push("\nPlease ask: \"What would you like to know about this candidate?\"");
     return lines.join("\n");
   }
 
@@ -558,12 +585,23 @@
     });
     card.appendChild(ul);
 
+    if (exp.stories && exp.stories.length) {
+      var diveBtn = el("button", "btn exp-dive-btn");
+      diveBtn.type = "button";
+      diveBtn.dataset.expId = exp.id;
+      diveBtn.textContent = "Deep Dive →";
+      card.appendChild(diveBtn);
+    }
+
     panel.appendChild(card);
     panelsEl.appendChild(panel);
   });
 
   /* intercept shipped-badge clicks → redirect modal */
   panelsEl.addEventListener("click", function (ev) {
+    var diveBtn = ev.target.closest(".exp-dive-btn");
+    if (diveBtn) { openExpSheet(diveBtn.dataset.expId); return; }
+
     var a = ev.target.closest(".ext-link");
     if (!a) return;
     ev.preventDefault();
@@ -774,6 +812,57 @@
     unlockBodyScroll();
   }
 
+  function openExpSheet(expId) {
+    var exp = d.experience.find(function (e) { return e.id === expId; });
+    if (!exp || !exp.stories) return;
+
+    skillSheetTitle.textContent = exp.role + " @ " + exp.company;
+    skillSheetStack.textContent = exp.stack;
+    skillSheetDesc.textContent  = exp.period;
+
+    skillSheetStories.innerHTML = "";
+
+    /* stories */
+    exp.stories.forEach(function (story) {
+      var article = el("article", "skill-story");
+      if (story.kicker) article.appendChild(el("p", "skill-story-kicker", esc(story.kicker)));
+      article.appendChild(el("h3", "skill-story-title", esc(story.title)));
+      if (story.context) article.appendChild(el("p", "skill-story-context", esc(story.context)));
+
+      if (story.details && story.details.length) {
+        var ul = el("ul", "sheet-details");
+        story.details.forEach(function (detail) {
+          ul.appendChild(el("li", null, esc(detail)));
+        });
+        article.appendChild(ul);
+      }
+      skillSheetStories.appendChild(article);
+    });
+
+    /* related projects */
+    if (exp.relatedProjects && exp.relatedProjects.length) {
+      var relHeader = el("p", "skill-story-kicker", "Related Projects");
+      skillSheetStories.appendChild(relHeader);
+
+      var relGrid = el("div", "exp-related-grid");
+      exp.relatedProjects.forEach(function (projId) {
+        var proj = d.projects.find(function (p) { return p.id === projId; });
+        if (!proj) return;
+        var mini = el("button", "exp-related-card");
+        mini.type = "button";
+        mini.dataset.projId = projId;
+        mini.appendChild(el("div", "exp-related-name", esc(proj.name)));
+        mini.appendChild(el("div", "exp-related-stack", esc(proj.stack)));
+        relGrid.appendChild(mini);
+      });
+      skillSheetStories.appendChild(relGrid);
+    }
+
+    skillSheetOverlay.removeAttribute("hidden");
+    lockBodyScroll();
+    skillSheetClose.focus();
+  }
+
   function openSheet(projId) {
     var proj = d.projects.find(function (p) { return p.id === projId; });
     if (!proj) return;
@@ -856,6 +945,15 @@
   });
 
   skillSheetOverlay.addEventListener("click", function (ev) {
+    /* related-project mini-card → open project sheet */
+    var relCard = ev.target.closest(".exp-related-card");
+    if (relCard) {
+      closeSkillSheet();
+      showSection("projects");
+      openSheet(relCard.dataset.projId);
+      return;
+    }
+
     var navBtn = ev.target.closest(".skill-nav-link");
     if (navBtn) {
       closeSkillSheet();

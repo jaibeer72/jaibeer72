@@ -1013,6 +1013,54 @@ body.sheet-open { position: fixed; width: 100%; overflow: hidden; }
 
 .sheet-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
+/* ---------- experience deep-dive button -------------------- */
+.exp-dive-btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+/* ---------- experience related-projects grid --------------- */
+.exp-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.exp-related-card {
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.85rem;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.exp-related-card:hover {
+  border-color: var(--neon-dim);
+  box-shadow: 0 0 8px rgba(0,255,200,.1);
+}
+
+.exp-related-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.exp-related-stack {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
 .skill-sheet-stories {
   display: flex;
   flex-direction: column;

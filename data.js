@@ -12,9 +12,9 @@ const RESUME_DATA = {
 
   contact: {
     github: "https://github.com/jaibeer72",
-    linkedin: "https://www.linkedin.com/in/jaibeer72",
+    linkedin: "https://www.linkedin.com/in/jaibeer-dugal/",
     itch: "https://jaibeer72.itch.io",
-    hireMe: "https://www.linkedin.com/in/jaibeer72",
+    hireMe: "https://www.linkedin.com/in/jaibeer-dugal/",
   },
 
   /**

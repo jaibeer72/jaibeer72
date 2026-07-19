@@ -34,31 +34,21 @@ const RESUME_DATA = {
     { word: "ZS",              type: "experience", id: "zs"        },
   ],
 
-  skills: [
-    {
-      id: "languages",
-      label: "Languages",
-      value: "C++, C#, JavaScript, Python, GLSL, Java",
-      sheet: {
-        stack: "C++ · C# · Interop · Memory Layout",
-        title: "Language Stories",
-        description:
-          "Concrete examples of how I use C++ and C# to reason about memory layout, native interop, and tooling that needs precise control over data.",
-        stories: [
-          {
-            kicker: "Ubisoft · Native Interop",
-            title: "Marshalling and layouting across C++ / C#",
-            context:
-              "This is the kind of work I use when I need to understand memory, match native layouts correctly, and safely move data between unmanaged and managed systems.",
-            details: [
-              "Matched C++ structs and function signatures in C# so managed tooling could talk to native code safely.",
-              "Used layout awareness to reason about alignment, ownership, and mutation across native and managed boundaries.",
-              "Maps directly to my Ubisoft experience, where memory budgets and low-level platform behaviour mattered every day.",
-            ],
-            snippets: [
-              {
-                language: "C++",
-                code: `struct LayoutData {
+  storyLibrary: {
+    ubisoftInterop: {
+      kicker: "Ubisoft · Native Interop",
+      title: "P/Invoke and struct marshalling across C++ / C#",
+      context:
+        "At Ubisoft we used Unity C# on top of native C++ platform SDKs. Getting that boundary right required understanding the memory layout on both sides.",
+      details: [
+        "Used P/Invoke with carefully matched struct layouts to call into native C++ SDKs from Unity C# without corruption or leaks.",
+        "Verified correct calling conventions and struct packing to match what the Switch and PS5 SDKs expected.",
+        "Co-designed the Jenkins and TeamCity build pipelines so PS5 and Switch builds were fully automated and reproducible.",
+      ],
+      snippets: [
+        {
+          language: "C++",
+          code: `struct LayoutData {
     int vertexCount;
     float bounds[3];
     int isVisible;
@@ -78,10 +68,10 @@ extern "C" {
         IUnityGraphics* graphics = unityInterfaces->Get<IUnityGraphics>();
     }
 }`,
-              },
-              {
-                language: "C#",
-                code: `public class NativeRendererInterop : MonoBehaviour
+        },
+        {
+          language: "C#",
+          code: `public class NativeRendererInterop : MonoBehaviour
 {
     [DllImport("YourNativePluginName", CallingConvention = CallingConvention.Cdecl)]
     private static extern void ProcessLayoutData(IntPtr dataPtr);
@@ -112,28 +102,40 @@ extern "C" {
         }
     }
 }`,
-              },
-            ],
-            links: [
-              { label: "View Ubisoft Experience", type: "experience", id: "ubisoft" },
-            ],
-          },
-          {
-            kicker: "C++ · CLI Tooling",
-            title: "TGA image conversion project",
-            context:
-              "I also write focused utility-style tools when I need to work directly with asset formats and practical command-line workflows.",
-            details: [
-              "Built a C++ utility project around TGA image conversion and low-level file-format handling.",
-              "Shows I can move from engine/runtime programming into focused CLI tooling when a workflow needs it.",
-              "A good example of practical C++ outside gameplay and graphics runtime code.",
-            ],
-            links: [
-              { label: "View Project", type: "project", id: "cpp-image-compression" },
-              { label: "Open GitHub", url: "https://github.com/jaibeer72/CppImageCompression" },
-            ],
-          },
-        ],
+        },
+      ],
+      links: [
+        { label: "View Ubisoft Experience", type: "experience", id: "ubisoft" },
+      ],
+    },
+    cppImageConversion: {
+      kicker: "C++ · CLI Tooling",
+      title: "TGA image conversion project",
+      context:
+        "I also write focused utility-style tools when I need to work directly with asset formats and practical command-line workflows.",
+      details: [
+        "Built a C++ utility project around TGA image conversion and low-level file-format handling.",
+        "Shows I can move from engine/runtime programming into focused CLI tooling when a workflow needs it.",
+        "A good example of practical C++ outside gameplay and graphics runtime code.",
+      ],
+      links: [
+        { label: "View Project", type: "project", id: "cpp-image-compression" },
+        { label: "Open GitHub", url: "https://github.com/jaibeer72/CppImageCompression" },
+      ],
+    },
+  },
+
+  skills: [
+    {
+      id: "languages",
+      label: "Languages",
+      value: "C++, C#, JavaScript, Python, GLSL, Java",
+      sheet: {
+        stack: "C++ · C# · Interop · Memory Layout",
+        title: "Language Stories",
+        description:
+          "Concrete examples of how I use C++ and C# to reason about memory layout, native interop, and tooling that needs precise control over data.",
+        storyRefs: ["ubisoftInterop", "cppImageConversion"],
       },
     },
     { label: "Game Dev", value: "Unity, Unreal Engine, Cocos Creator" },
@@ -322,18 +324,8 @@ extern "C" {
             "This is directly connected to the C++ / C# interop and marshalling work: understanding struct layout is the foundation of both.",
           ],
         },
-        {
-          kicker: "C++ / C# · Interop · Platform",
-          title: "P/Invoke and struct marshalling across native plugin boundaries",
-          context:
-            "At Ubisoft we used Unity C# on top of native C++ platform SDKs. Getting that boundary right required understanding the memory layout on both sides.",
-          details: [
-            "Used P/Invoke with carefully matched struct layouts to call into native C++ SDKs from Unity C# without corruption or leaks.",
-            "Verified correct calling conventions and struct packing to match what the Switch and PS5 SDKs expected.",
-            "Co-designed the Jenkins and TeamCity build pipelines so PS5 and Switch builds were fully automated and reproducible.",
-          ],
-        },
       ],
+      storyRefs: ["ubisoftInterop"],
       relatedProjects: ["vulkangfx", "cpp-image-compression", "opengl"],
     },
     {

@@ -1014,8 +1014,38 @@ body.sheet-open { position: fixed; width: 100%; overflow: hidden; }
 .sheet-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
 /* ---------- experience deep-dive button -------------------- */
+.exp-deepdive {
+  border: 1px solid rgba(0, 255, 200, 0.24);
+  background: rgba(0, 255, 200, 0.06);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.exp-deepdive-kicker {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--neon);
+  font-family: var(--font-mono);
+}
+
+.exp-deepdive-title {
+  font-size: 0.84rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+  margin-top: 0.4rem;
+}
+
+.exp-deepdive-summary {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 0.4rem;
+}
+
 .exp-dive-btn {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   align-self: flex-start;
 }
 

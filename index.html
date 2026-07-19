@@ -312,6 +312,18 @@
   /* ── HERO ─────────────────────────────────────────────── */
   var d = RESUME_DATA;
 
+  function resolveStories(source) {
+    if (!source) return [];
+    var stories = [];
+    if (source.stories && source.stories.length) stories = stories.concat(source.stories);
+    if (source.storyRefs && source.storyRefs.length && d.storyLibrary) {
+      source.storyRefs.forEach(function (ref) {
+        if (d.storyLibrary[ref]) stories.push(d.storyLibrary[ref]);
+      });
+    }
+    return stories;
+  }
+
   document.getElementById("hero-name").innerHTML =
     esc(d.name).replace(/(\S+)$/, "<span>$1</span>");
   document.getElementById("hero-title").textContent = d.title;
@@ -379,16 +391,15 @@
     /* Technical depth — one tight line per story pulled from experience and skills */
     var depthLines = [];
     d.experience.forEach(function (exp) {
-      if (!exp.stories) return;
-      exp.stories.forEach(function (story) {
+      resolveStories(exp).forEach(function (story) {
         if (story.details && story.details[0]) {
           depthLines.push("– [" + exp.company + "] " + story.title + ": " + story.details[0]);
         }
       });
     });
     d.skills.forEach(function (s) {
-      if (!s.sheet || !s.sheet.stories) return;
-      s.sheet.stories.forEach(function (story) {
+      if (!s.sheet) return;
+      resolveStories(s.sheet).forEach(function (story) {
         if (story.details && story.details[0]) {
           depthLines.push("– [" + s.label + "] " + story.title + ": " + story.details[0]);
         }
@@ -542,6 +553,7 @@
   attachHorizontalEdgeBounce(navInner);
 
   d.experience.forEach(function (exp, idx) {
+    var expStories = resolveStories(exp);
     /* tab button */
     var btn = el("button", "exp-tab-btn" + (idx === 0 ? " active" : ""));
     btn.dataset.idx = idx;
@@ -567,6 +579,21 @@
 
     card.appendChild(el("div", "exp-stack", esc(exp.stack)));
 
+    if (expStories.length) {
+      var deepDive = el("div", "exp-deepdive");
+      deepDive.appendChild(el("p", "exp-deepdive-kicker", "IMPORTANT FUN TECHNICAL INFO"));
+      deepDive.appendChild(el("h3", "exp-deepdive-title", esc(expStories[0].title)));
+      if (expStories[0].details && expStories[0].details[0]) {
+        deepDive.appendChild(el("p", "exp-deepdive-summary", esc(expStories[0].details[0])));
+      }
+      var diveBtn = el("button", "btn exp-dive-btn");
+      diveBtn.type = "button";
+      diveBtn.dataset.expId = exp.id;
+      diveBtn.textContent = "Technical Deep Dive →";
+      deepDive.appendChild(diveBtn);
+      card.appendChild(deepDive);
+    }
+
     if (exp.shipped && exp.shipped.length) {
       var shippedRow = el("div", "shipped-row");
       shippedRow.appendChild(el("span", "shipped-label", "Shipped:"));
@@ -584,14 +611,6 @@
       ul.appendChild(el("li", null, esc(h)));
     });
     card.appendChild(ul);
-
-    if (exp.stories && exp.stories.length) {
-      var diveBtn = el("button", "btn exp-dive-btn");
-      diveBtn.type = "button";
-      diveBtn.dataset.expId = exp.id;
-      diveBtn.textContent = "Deep Dive →";
-      card.appendChild(diveBtn);
-    }
 
     panel.appendChild(card);
     panelsEl.appendChild(panel);
@@ -751,8 +770,9 @@
     skillSheetDesc.textContent  = skill.sheet.description || "";
 
     skillSheetStories.innerHTML = "";
-    if (skill.sheet.stories && skill.sheet.stories.length) {
-      skill.sheet.stories.forEach(function (story) {
+    var skillStories = resolveStories(skill.sheet);
+    if (skillStories.length) {
+      skillStories.forEach(function (story) {
         var article = el("article", "skill-story");
         if (story.kicker) article.appendChild(el("p", "skill-story-kicker", esc(story.kicker)));
         article.appendChild(el("h3", "skill-story-title", esc(story.title)));
@@ -814,7 +834,8 @@
 
   function openExpSheet(expId) {
     var exp = d.experience.find(function (e) { return e.id === expId; });
-    if (!exp || !exp.stories) return;
+    var expStories = resolveStories(exp);
+    if (!exp || !expStories.length) return;
 
     skillSheetTitle.textContent = exp.role + " @ " + exp.company;
     skillSheetStack.textContent = exp.stack;
@@ -823,7 +844,7 @@
     skillSheetStories.innerHTML = "";
 
     /* stories */
-    exp.stories.forEach(function (story) {
+    expStories.forEach(function (story) {
       var article = el("article", "skill-story");
       if (story.kicker) article.appendChild(el("p", "skill-story-kicker", esc(story.kicker)));
       article.appendChild(el("h3", "skill-story-title", esc(story.title)));

@@ -158,6 +158,23 @@
   </div>
 </div>
 
+<!-- ===================== SKILL BOTTOM SHEET ===================== -->
+<div id="skill-sheet-overlay" class="sheet-overlay" hidden>
+  <div id="skill-sheet" class="proj-sheet skill-sheet" role="dialog" aria-modal="true" aria-labelledby="skill-sheet-title">
+    <div class="sheet-header">
+      <div>
+        <p id="skill-sheet-stack" class="sheet-stack"></p>
+        <h2 id="skill-sheet-title" class="sheet-title"></h2>
+      </div>
+      <button id="skill-sheet-close" class="sheet-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-body">
+      <p id="skill-sheet-desc" class="sheet-desc"></p>
+      <div id="skill-sheet-stories" class="skill-sheet-stories"></div>
+    </div>
+  </div>
+</div>
+
 <!-- data first, then renderer -->
 <script src="data.js"></script>
 <script>
@@ -443,10 +460,32 @@
 
   var sg = document.getElementById("skills-grid");
   d.skills.forEach(function (s) {
-    var row = el("div", "skill-row");
+    var row = s.sheet ? el("button", "skill-row skill-row-button") : el("div", "skill-row");
+    if (s.sheet) {
+      row.type = "button";
+      row.dataset.skillId = s.id || s.label;
+      row.setAttribute("aria-label", "View details for " + s.label);
+    }
     row.appendChild(el("span", "skill-label", esc(s.label)));
     row.appendChild(el("span", "skill-value", esc(s.value)));
+    if (s.sheet) row.appendChild(el("span", "skill-hint", "Tap for stories →"));
     sg.appendChild(row);
+  });
+
+  sg.addEventListener("click", function (ev) {
+    var row = ev.target.closest(".skill-row-button");
+    if (!row) return;
+    openSkillSheet(row.dataset.skillId);
+  });
+
+  sg.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") {
+      var row = ev.target.closest(".skill-row-button");
+      if (row) {
+        ev.preventDefault();
+        openSkillSheet(row.dataset.skillId);
+      }
+    }
   });
 
   var eduList = document.getElementById("edu-list");
@@ -643,7 +682,97 @@
   var sheetDetails = document.getElementById("sheet-details");
   var sheetLinks   = document.getElementById("sheet-links");
   var sheetImgWrap = document.getElementById("sheet-image-wrap");
+  var skillSheetOverlay = document.getElementById("skill-sheet-overlay");
+  var skillSheetClose   = document.getElementById("skill-sheet-close");
+  var skillSheetTitle   = document.getElementById("skill-sheet-title");
+  var skillSheetStack   = document.getElementById("skill-sheet-stack");
+  var skillSheetDesc    = document.getElementById("skill-sheet-desc");
+  var skillSheetStories = document.getElementById("skill-sheet-stories");
   var savedScrollY = 0;
+
+  function lockBodyScroll() {
+    savedScrollY = window.pageYOffset;
+    document.body.style.top = '-' + savedScrollY + 'px';
+    document.body.classList.add("sheet-open");
+  }
+
+  function unlockBodyScroll() {
+    document.body.classList.remove("sheet-open");
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
+  }
+
+  function openSkillSheet(skillId) {
+    var skill = d.skills.find(function (item) {
+      return (item.id || item.label) === skillId;
+    });
+    if (!skill || !skill.sheet) return;
+
+    skillSheetTitle.textContent = skill.sheet.title || skill.label;
+    skillSheetStack.textContent = skill.sheet.stack || skill.value;
+    skillSheetDesc.textContent  = skill.sheet.description || "";
+
+    skillSheetStories.innerHTML = "";
+    if (skill.sheet.stories && skill.sheet.stories.length) {
+      skill.sheet.stories.forEach(function (story) {
+        var article = el("article", "skill-story");
+        if (story.kicker) article.appendChild(el("p", "skill-story-kicker", esc(story.kicker)));
+        article.appendChild(el("h3", "skill-story-title", esc(story.title)));
+        if (story.context) article.appendChild(el("p", "skill-story-context", esc(story.context)));
+
+        if (story.details && story.details.length) {
+          var ul = el("ul", "sheet-details");
+          story.details.forEach(function (detail) {
+            ul.appendChild(el("li", null, esc(detail)));
+          });
+          article.appendChild(ul);
+        }
+
+        if (story.snippets && story.snippets.length) {
+          var samples = el("div", "code-sample-list");
+          story.snippets.forEach(function (snippet) {
+            var sample = el("section", "code-sample");
+            sample.appendChild(el("div", "code-sample-label", esc(snippet.language)));
+            var pre = el("pre", "code-sample-pre");
+            pre.textContent = snippet.code;
+            sample.appendChild(pre);
+            samples.appendChild(sample);
+          });
+          article.appendChild(samples);
+        }
+
+        if (story.links && story.links.length) {
+          var row = el("div", "sheet-links");
+          story.links.forEach(function (link) {
+            if (link.url) {
+              var a = el("a", "btn btn-neon skill-ext-link", esc(link.label) + " →");
+              a.href = link.url;
+              a.dataset.label = link.label;
+              row.appendChild(a);
+            } else if (link.type && link.id) {
+              var btn = el("button", "btn btn-neon skill-nav-link", esc(link.label) + " →");
+              btn.type = "button";
+              btn.dataset.navType = link.type;
+              btn.dataset.navId = link.id;
+              row.appendChild(btn);
+            }
+          });
+          article.appendChild(row);
+        }
+
+        skillSheetStories.appendChild(article);
+      });
+    }
+
+    skillSheetOverlay.removeAttribute("hidden");
+    lockBodyScroll();
+    skillSheetClose.focus();
+  }
+
+  function closeSkillSheet() {
+    skillSheetOverlay.setAttribute("hidden", "");
+    unlockBodyScroll();
+  }
 
   function openSheet(projId) {
     var proj = d.projects.find(function (p) { return p.id === projId; });
@@ -684,17 +813,13 @@
 
     sheetOverlay.removeAttribute("hidden");
     /* iOS Safari scroll-lock: fix body at current scroll position */
-    savedScrollY = window.pageYOffset;
-    document.body.style.top = '-' + savedScrollY + 'px';
-    document.body.classList.add("sheet-open");
+    lockBodyScroll();
     sheetClose.focus();
   }
 
   function closeSheet() {
     sheetOverlay.setAttribute("hidden", "");
-    document.body.classList.remove("sheet-open");
-    document.body.style.top = '';
-    window.scrollTo(0, savedScrollY);
+    unlockBodyScroll();
   }
 
   /* project card click / keyboard */
@@ -725,9 +850,30 @@
     openRedirect(a.href, a.dataset.label || a.textContent);
   });
 
+  skillSheetClose.addEventListener("click", closeSkillSheet);
+  skillSheetOverlay.addEventListener("click", function (ev) {
+    if (ev.target === skillSheetOverlay) closeSkillSheet();
+  });
+
+  skillSheetOverlay.addEventListener("click", function (ev) {
+    var navBtn = ev.target.closest(".skill-nav-link");
+    if (navBtn) {
+      closeSkillSheet();
+      navigateTo(navBtn.dataset.navType, navBtn.dataset.navId);
+      return;
+    }
+
+    var a = ev.target.closest(".skill-ext-link");
+    if (!a) return;
+    ev.preventDefault();
+    closeSkillSheet();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
+
   /* ── KEYBOARD GLOBAL ──────────────────────────────────── */
   document.addEventListener("keydown", function (ev) {
     if (ev.key === "Escape") {
+      if (!skillSheetOverlay.hasAttribute("hidden")) { closeSkillSheet(); return; }
       if (!sheetOverlay.hasAttribute("hidden")) { closeSheet(); return; }
       if (!aiModal.hasAttribute("hidden"))      { closeAiModal(); return; }
       if (!modal.hasAttribute("hidden"))        { closeRedirect(); }

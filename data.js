@@ -35,7 +35,107 @@ const RESUME_DATA = {
   ],
 
   skills: [
-    { label: "Languages", value: "C++, C#, JavaScript, Python, GLSL, Java" },
+    {
+      id: "languages",
+      label: "Languages",
+      value: "C++, C#, JavaScript, Python, GLSL, Java",
+      sheet: {
+        stack: "C++ · C# · Interop · Memory Layout",
+        title: "Language Stories",
+        description:
+          "Concrete examples of how I use C++ and C# to reason about memory layout, native interop, and tooling that needs precise control over data.",
+        stories: [
+          {
+            kicker: "Ubisoft · Native Interop",
+            title: "Marshalling and layouting across C++ / C#",
+            context:
+              "This is the kind of work I use when I need to understand memory, match native layouts correctly, and safely move data between unmanaged and managed systems.",
+            details: [
+              "Matched C++ structs and function signatures in C# so managed tooling could talk to native code safely.",
+              "Used layout awareness to reason about alignment, ownership, and mutation across native and managed boundaries.",
+              "Maps directly to my Ubisoft experience, where memory budgets and low-level platform behaviour mattered every day.",
+            ],
+            snippets: [
+              {
+                language: "C++",
+                code: `struct LayoutData {
+    int vertexCount;
+    float bounds[3];
+    int isVisible;
+};
+
+extern "C" {
+    void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API ProcessLayoutData(LayoutData* dataPtr) {
+        if (dataPtr == nullptr) return;
+
+        int currentVerts = dataPtr->vertexCount;
+        float boundsX = dataPtr->bounds[0];
+
+        dataPtr->vertexCount = currentVerts * 2;
+    }
+
+    void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces* unityInterfaces) {
+        IUnityGraphics* graphics = unityInterfaces->Get<IUnityGraphics>();
+    }
+}`,
+              },
+              {
+                language: "C#",
+                code: `public class NativeRendererInterop : MonoBehaviour
+{
+    [DllImport("YourNativePluginName", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void ProcessLayoutData(IntPtr dataPtr);
+
+    public void DispatchLayoutData()
+    {
+        LayoutData data = new LayoutData
+        {
+            vertexCount = 100,
+            bounds = new Vector3(10f, 20f, 30f),
+            isVisible = 1
+        };
+
+        int size = Marshal.SizeOf(typeof(LayoutData));
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+
+        try
+        {
+            Marshal.StructureToPtr(data, ptr, false);
+            ProcessLayoutData(ptr);
+            data = (LayoutData)Marshal.PtrToStructure(ptr, typeof(LayoutData));
+
+            Debug.Log($"Mutated vertex count from C++: {data.vertexCount}");
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(ptr);
+        }
+    }
+}`,
+              },
+            ],
+            links: [
+              { label: "View Ubisoft Experience", type: "experience", id: "ubisoft" },
+            ],
+          },
+          {
+            kicker: "C++ · CLI Tooling",
+            title: "TGA image conversion project",
+            context:
+              "I also write focused utility-style tools when I need to work directly with asset formats and practical command-line workflows.",
+            details: [
+              "Built a C++ utility project around TGA image conversion and low-level file-format handling.",
+              "Shows I can move from engine/runtime programming into focused CLI tooling when a workflow needs it.",
+              "A good example of practical C++ outside gameplay and graphics runtime code.",
+            ],
+            links: [
+              { label: "View Project", type: "project", id: "cpp-image-compression" },
+              { label: "Open GitHub", url: "https://github.com/jaibeer72/CppImageCompression" },
+            ],
+          },
+        ],
+      },
+    },
     { label: "Game Dev", value: "Unity, Unreal Engine, Cocos Creator" },
     { label: "Backend", value: ".NET, Spring Boot, Node.js, FastAPI, REST, RPC" },
     { label: "Graphics", value: "Vulkan, OpenGL, GLSL, 3D Rendering, Shaders" },
@@ -223,6 +323,7 @@ const RESUME_DATA = {
       stack: "React, TMDB API, PostgreSQL / MongoDB",
       description:
         "Scalable streaming-service prototype integrating the TMDB API. Includes a comparative analysis of NoSQL vs. relational database paradigms to determine optimal schema strategies for recommendation engines.",
+      image: "https://raw.githubusercontent.com/jaibeer72/netflix-clone-sem1/main/Assets/Screenshot%202023-08-15%20at%2014.33.29.png",
       details: [
         "React SPA with dynamic routing for browse, title detail, and search pages.",
         "Live data from The Movie Database (TMDB) API — posters, trailers, cast, and ratings.",
@@ -230,6 +331,19 @@ const RESUME_DATA = {
         "Comparative report analyses query performance and schema flexibility across both paradigms for recommendation workloads.",
       ],
       links: [{ label: "GitHub", url: "https://github.com/jaibeer72/netflix-clone-sem1" }],
+    },
+    {
+      id: "cpp-image-compression",
+      name: "TGA Image Conversion CLI",
+      stack: "C++, CLI, Image Processing",
+      description:
+        "A focused C++ utility project for working with TGA image conversion and file-format level data handling.",
+      details: [
+        "Built as a practical command-line style tool rather than a UI-heavy app.",
+        "Works close to raw image data and format-specific conversion steps.",
+        "A useful example of low-level C++ problem solving applied to tooling workflows.",
+      ],
+      links: [{ label: "GitHub", url: "https://github.com/jaibeer72/CppImageCompression" }],
     },
     {
       id: "spacebound",

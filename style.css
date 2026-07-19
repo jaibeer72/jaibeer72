@@ -496,6 +496,15 @@ section { padding: 4rem 0; }
   overflow: hidden;
 }
 
+.skill-row-button {
+  width: 100%;
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
 /* top-edge glow that appears on hover */
 .skill-row::before {
   content: '';
@@ -508,6 +517,12 @@ section { padding: 4rem 0; }
 }
 .skill-row:hover { border-color: var(--neon-dim); box-shadow: 0 0 10px rgba(0,255,200,.12); }
 .skill-row:hover::before { opacity: 1; }
+.skill-row-button:focus-visible {
+  outline: 1px solid var(--neon);
+  outline-offset: 2px;
+  border-color: var(--neon);
+  box-shadow: 0 0 12px rgba(0,255,200,.18);
+}
 
 .skill-label {
   font-size: 0.6rem;
@@ -522,6 +537,15 @@ section { padding: 4rem 0; }
   font-size: 0.8rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
+}
+
+.skill-hint {
+  font-size: 0.68rem;
+  color: var(--neon-alt);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  margin-top: 0.2rem;
 }
 
 /* ---------- education & certs ------------------------------ */
@@ -937,11 +961,19 @@ body.sheet-open { position: fixed; width: 100%; overflow: hidden; }
   overflow: hidden;
   background: var(--surface2);
   border: 1px solid var(--border);
+  min-height: 220px;
+  display: flex;
+  align-items: stretch;
+}
+.sheet-image-wrap:empty {
+  display: none;
 }
 
 .sheet-img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 220px;
+  max-height: 360px;
   object-fit: cover;
   display: block;
   border-radius: var(--radius);
@@ -980,6 +1012,73 @@ body.sheet-open { position: fixed; width: 100%; overflow: hidden; }
 }
 
 .sheet-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.skill-sheet-stories {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skill-story {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.skill-story-kicker {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--neon-alt);
+  font-family: var(--font-mono);
+}
+
+.skill-story-title {
+  font-size: 1rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.skill-story-context {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.code-sample-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.code-sample {
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.code-sample-label {
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--neon);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.code-sample-pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
 
 /* ---------- shipped titles --------------------------------- */
 .shipped-row {
@@ -1137,6 +1236,8 @@ footer {
   .sheet-header { padding: 1.1rem 1rem 0.75rem; }
   .sheet-body   { padding: 1rem 1rem 1.5rem; }
   .sheet-title  { font-size: 1.05rem; }
+  .sheet-image-wrap { min-height: 180px; }
+  .sheet-img { min-height: 180px; }
 
   .modal-box { padding: 1.4rem 1.1rem; }
 }

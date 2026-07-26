@@ -200,6 +200,14 @@ section { padding: 4rem 0; }
   animation: cursor-blink 1s step-end infinite;
 }
 
+.hero-summary {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 1.25rem;
+  max-width: 600px;
+}
+
 .hero-links {
   display: flex;
   gap: 0.75rem;
@@ -427,33 +435,7 @@ section { padding: 4rem 0; }
   visibility: visible;
 }
 
-/* ---------- summary box ------------------------------------ */
-.summary-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--neon);
-  border-radius: var(--radius);
-  padding: 1.4rem 1.6rem;
-  font-size: 0.86rem;
-  color: var(--text-muted);
-  line-height: 1.8;
-  margin-bottom: 3rem;
-  position: relative;
-  animation: glitch-border 8s infinite;
-}
-
-.summary-box::before {
-  content: '/* summary */';
-  position: absolute;
-  top: -0.6rem;
-  left: 1rem;
-  font-size: 0.58rem;
-  color: var(--neon-alt);
-  background: var(--bg);
-  padding: 0 0.4rem;
-  font-family: var(--font-mono);
-  letter-spacing: 0.1em;
-}
+/* ---------- summary box (removed) ------------------------------------ */
 
 /* keyword cross-links */
 .kw-link {

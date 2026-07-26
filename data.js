@@ -6,9 +6,8 @@
 const RESUME_DATA = {
   name: "Jaibeer Singh",
   title: "Senior Software Engineer",
-  tagline: "C++ · Graphics · Backend · Games",
-  summary:
-    "Senior Software Engineer with 6 years shipping production code across AAA console titles, real-time graphics engines, and scalable backend infrastructure. Cut Android startup latency by 46% at Noon; brought a critical API from 3 s to 1.5 s at ZS. Memory budget management on PS5 and Nintendo Switch at Ubisoft. Custom Vulkan graphics engine built from scratch.",
+  tagline: "Games · Graphics · Backend · Full-Stack",
+  summary: "Senior Software Engineer bridging the gap between AAA gameplay, systems-level graphics, and highly scalable backend infrastructure.",
 
   contact: {
     github: "https://github.com/jaibeer72",

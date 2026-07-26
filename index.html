@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jaibeer Singh — Portfolio</title>
-  <meta name="description" content="Senior Software Engineer — C++, Graphics, Backend, Games" />
+  <meta name="description" content="Senior Software Engineer —  Games, Full-Stack, Graphics, Backend" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -20,6 +20,7 @@
         <h1 class="hero-name" id="hero-name"><!-- js --></h1>
         <p class="hero-title" id="hero-title"><!-- js --></p>
         <p class="hero-tagline" id="hero-tagline"><!-- js --></p>
+        <div class="hero-summary" id="hero-summary"><!-- js --></div>
       </div>
       <div class="hero-right">
         <div class="hero-links" id="hero-links"><!-- js --></div>
@@ -33,8 +34,8 @@
 <nav id="site-nav">
   <div class="container">
     <div class="nav-inner">
-      <button class="nav-tab active" data-section="about">About</button>
-      <button class="nav-tab" data-section="experience">Experience</button>
+      <button class="nav-tab active" data-section="experience">Experience</button>
+      <button class="nav-tab" data-section="about">Skills</button>
       <button class="nav-tab" data-section="projects">Projects</button>
     </div>
   </div>
@@ -44,23 +45,6 @@
 <main>
 <div class="sections-viewport">
 <div id="sections-track" class="sections-track">
-
-  <!-- ---- ABOUT ---- -->
-  <section id="about" class="site-section">
-    <div class="container">
-      <p class="section-label">Professional Summary</p>
-      <div class="summary-box" id="summary-box"><!-- js --></div>
-
-      <p class="section-label">Technical Skills</p>
-      <div class="skills-grid" id="skills-grid"><!-- js --></div>
-
-      <p class="section-label">Education</p>
-      <div class="edu-list" id="edu-list"><!-- js --></div>
-
-      <p class="section-label" style="margin-top:2rem">Certifications</p>
-      <div class="cert-list" id="cert-list"><!-- js --></div>
-    </div>
-  </section>
 
   <!-- ---- EXPERIENCE ---- -->
   <section id="experience" class="site-section">
@@ -82,6 +66,20 @@
       <div class="exp-carousel-viewport">
         <div id="exp-panels"><!-- js --></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ---- SKILLS (formerly About) ---- -->
+  <section id="about" class="site-section">
+    <div class="container">
+      <p class="section-label">Technical Skills</p>
+      <div class="skills-grid" id="skills-grid"><!-- js --></div>
+
+      <p class="section-label">Education</p>
+      <div class="edu-list" id="edu-list"><!-- js --></div>
+
+      <p class="section-label" style="margin-top:2rem">Certifications</p>
+      <div class="cert-list" id="cert-list"><!-- js --></div>
     </div>
   </section>
 
@@ -502,7 +500,7 @@
   });
 
 
-  var summaryBox = document.getElementById("summary-box");
+  var summaryBox = document.getElementById("hero-summary");
   summaryBox.innerHTML = linkify(d.summary);
   summaryBox.addEventListener("click", function (ev) {
     var btn = ev.target.closest(".kw-link");
@@ -1015,7 +1013,7 @@
 
   /* ── SITE NAV (section switcher) ──────────────────────── */
   var navTabs      = document.querySelectorAll(".nav-tab");
-  var sectionOrder = ["about", "experience", "projects"];
+  var sectionOrder = ["experience", "about", "projects"];
   var sectionsTrack = document.getElementById("sections-track");
   var currentSectionIdx = 0;
   var sectionScrollY = {};   /* remembers scroll position per section */
@@ -1045,7 +1043,7 @@
 
   /* initialise sections to "about" without triggering the slide transition */
   sectionsTrack.style.transition = 'none';
-  showSection("about");
+  showSection("experience");
   void sectionsTrack.offsetWidth; /* force reflow before re-enabling transition */
   sectionsTrack.style.transition = '';
 

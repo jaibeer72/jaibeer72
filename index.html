@@ -425,12 +425,14 @@
     });
     lines.push("");
 
-    /* Education compact */
-    lines.push("**EDUCATION:** " +
-      d.education.map(function (e) {
-        return e.degree.replace(/\s*—.*/, "") + " (" + e.institution.split(" ")[0] + " " + e.period.split("–")[1].trim() + ")";
-      }).join(" | ")
-    );
+    /* Education */
+    lines.push("**EDUCATION:**");
+    d.education.forEach(function (e) {
+      lines.push("• " + e.degree + " (" + e.institution + ")");
+      if (e.details && e.details.length) {
+        lines.push("  - " + e.details.join(" "));
+      }
+    });
     lines.push("**CERTS:** " + d.certifications.join(", "));
     lines.push("\n### IMPORTANT INSTRUCTIONS FOR YOUR RESPONSES");
     lines.push("When the user asks a question about this candidate, you must ALWAYS structure your response using the 'Why -> How -> What' format:");
@@ -544,6 +546,17 @@
     card.appendChild(el("div", "edu-degree", esc(e.degree)));
     card.appendChild(el("div", "edu-inst",   esc(e.institution)));
     card.appendChild(el("div", "edu-period", esc(e.period)));
+
+    if (e.details && e.details.length > 0) {
+      var ul = el("ul", "sheet-details edu-details");
+      ul.style.marginTop = "0.75rem";
+      ul.style.marginBottom = "0";
+      e.details.forEach(function (detail) {
+        ul.appendChild(el("li", null, esc(detail)));
+      });
+      card.appendChild(ul);
+    }
+
     eduList.appendChild(card);
   });
 

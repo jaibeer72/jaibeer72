@@ -453,11 +453,22 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
       degree: "MSc (with Distinction) — Advanced Computer Science",
       institution: "University of Dundee",
       period: "Sep 2022 – Nov 2023",
+      details: [
+        "Specialised in advanced foundational topics including the complex mathematics behind Artificial Intelligence and Machine Learning.",
+        "Mastered modern systems architecture through modules in Agile Engineering, DevOps, and MicroServices.",
+        "Delved into heavy computational concepts with Graphics, Database Systems, and Advanced Programming Techniques.",
+        "Graduated with Distinction, demonstrating the ability to rapidly grasp and apply highly advanced, complex computer science fundamentals."
+      ]
     },
     {
       degree: "BSc (Hons) — Interactive Media (Game Development)",
       institution: "Birmingham City University & ICAT",
       period: "Jun 2016 – Jun 2019",
+      details: [
+        "Focused heavily on hard software engineering for games: Graphics Programming, Console Game Development, and Artificial Intelligence.",
+        "Studied core computer science fundamentals including Data Design & Analysis, Computer Systems Technology, and Computer Communication Networks.",
+        "Built a strong foundation in low-level programming and engine architecture."
+      ]
     },
   ],
 

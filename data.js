@@ -321,6 +321,28 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         { label: "View Noon Experience", type: "experience", id: "noon" },
       ],
     },
+    vcsAdaptability: {
+      kicker: "Git · Perforce · Mercurial",
+      title: "Seamlessly Adapting Across Version Control Systems",
+      context:
+        "Large studios and enterprises use wildly different version control systems. I adapt to whatever the pipeline requires without friction.",
+      details: [
+        "Noon, ZS Associates, and Reliance Games: Driven by Git and GitHub, integrating with modern CI/CD pipelines.",
+        "Ubisoft: Navigated Perforce (P4), mastering changelists, streams, and exclusive checkouts for massive binary assets in AAA pipelines.",
+        "Rythmos: Worked fluidly across both Mercurial and Git, adapting to legacy repositories alongside modern codebases."
+      ],
+    },
+    aiExperience: {
+      kicker: "AI · LLMs · Prompt Engineering",
+      title: "Integrating AI & Modern Tooling for Real-World Impact",
+      context:
+        "I leverage AI both as a developer tool to massively accelerate my velocity, and as an integration layer for modern applications.",
+      details: [
+        "Integrated AI and LLM APIs to drive intelligent application features and automate complex reasoning tasks.",
+        "Engineered strict prompts to ensure reliable, deterministic JSON outputs from generative models for backend parsing.",
+        "Extensively utilise AI-assisted coding tools to prototype rapidly, debug complex architecture, and ship production code significantly faster."
+      ],
+    }
   },
 
   skills: [
@@ -402,7 +424,28 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         storyRefs: ["sqlCteOptimization"],
       }
     },
-    { label: "VCS", value: "Git, Perforce, Mercurial" },
+    {
+      id: "vcs",
+      label: "Version Control",
+      value: "Git, Perforce, Mercurial",
+      sheet: {
+        stack: "Git · P4 · Hg",
+        title: "Version Control Systems",
+        description: "Adapting to the right tool for the job—whether it's managing massive binary assets in Perforce or building clean commit histories in Git.",
+        storyRefs: ["vcsAdaptability"],
+      }
+    },
+    {
+      id: "ai",
+      label: "AI & LLMs",
+      value: "Prompt Engineering, LLM Integration, AI-Assisted Dev",
+      sheet: {
+        stack: "LLMs · Prompt Engineering",
+        title: "Artificial Intelligence",
+        description: "Leveraging generative AI to build smarter applications and drastically accelerate my own engineering velocity.",
+        storyRefs: ["aiExperience"],
+      }
+    },
   ],
 
   education: [

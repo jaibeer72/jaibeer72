@@ -167,6 +167,48 @@ Assert.Equal(expectedVal, result.Value);`
         { label: "View ZS Experience", type: "experience", id: "zs" },
       ],
     },
+    relianceLiveOps: {
+      kicker: "Unity / C# · Live Title",
+      title: "Shipping live-ops features without breaking what's already live",
+      context:
+        "Live-ops titles can't afford downtime. Every change touches an active player base, so stability has to be maintained while the feature train keeps moving.",
+      details: [
+        "Hardened the Spring Boot backend behind American Dad! to cut server crash rate by 15%.",
+        "Strengthened the C# .NET client-server communication layer to handle edge cases in REST and RPC calls.",
+        "Retrofitted Git LFS for the art team — previously large assets were causing sync failures that blocked the whole pipeline.",
+      ],
+      links: [
+        { label: "View Reliance Experience", type: "experience", id: "reliance" },
+      ],
+    },
+    ubisoftMemory: {
+      kicker: "C++ · Memory Layout · Console",
+      title: "Memory budget management and data layout on PS5 and Switch",
+      context:
+        "Console certification requires precise memory control. The work was not just about using less memory — it was about understanding exactly how data is laid out in cache, what trips the platform compliance checker, and how to fix it.",
+      details: [
+        "Managed memory budgets across both Just Dance 2023 and Oddballers for PS5 and Nintendo Switch certification.",
+        "Optimised game memory layout — conscious struct alignment and access patterns — delivering a 20% improvement in profiled builds.",
+        "This is directly connected to the C++ / C# interop and marshalling work: understanding struct layout is the foundation of both.",
+      ],
+      links: [
+        { label: "View Ubisoft Experience", type: "experience", id: "ubisoft" },
+      ],
+    },
+    rythmosEngineBugs: {
+      kicker: "Unity · Engine Internals · Consulting",
+      title: "Diagnosing deep Unity engine bugs under production pressure",
+      context:
+        "Consulting means debugging code you didn't write, usually under urgency. This pushed me to read engine internals and reason about rendering and scene management paths from first principles.",
+      details: [
+        "Diagnosed and fixed Unity3D engine-level bugs for enterprise clients — required tracing through rendering and scene graph code to find root causes.",
+        "Migrated a graphics testing suite from the legacy render pipeline to SRP/URP without visual regressions, which required understanding both pipeline architectures deeply.",
+        "Built automation tooling for performance and runtime testing that cut QA cycles by 30%.",
+      ],
+      links: [
+        { label: "View Rythmos Experience", type: "experience", id: "rythmos" },
+      ],
+    },
     sqlCteOptimization: {
       kicker: "Java Spring Boot · PostgreSQL",
       title: "From 3s to 1.5s: Aggregating Iterative Queries with CTEs",
@@ -241,7 +283,17 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         storyRefs: ["ubisoftInterop", "cppImageConversion"],
       },
     },
-    { label: "Game Dev", value: "Unity, Unreal Engine, Cocos Creator" },
+    {
+      id: "gamedev",
+      label: "Game Dev",
+      value: "Unity, Unreal Engine, Cocos Creator",
+      sheet: {
+        stack: "Unity · Unreal · Engineering",
+        title: "Game Engine Engineering",
+        description: "From fixing deep rendering bugs in Unity's core to shipping live-ops titles without downtime, I treat game engines as serious software engineering domains.",
+        storyRefs: ["relianceLiveOps", "rythmosEngineBugs"],
+      }
+    },
     {
       id: "backend",
       label: "Backend",
@@ -253,7 +305,17 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         storyRefs: ["netTestingBuilder"],
       }
     },
-    { label: "Graphics", value: "Vulkan, OpenGL, GLSL, 3D Rendering, Shaders" },
+    {
+      id: "graphics",
+      label: "Graphics",
+      value: "Vulkan, OpenGL, GLSL, 3D Rendering, Shaders",
+      sheet: {
+        stack: "C++ · Memory Layout · Graphics",
+        title: "Graphics & Memory Architecture",
+        description: "Understanding exactly how data is laid out in cache and managing strict memory budgets across console and rendering pipelines.",
+        storyRefs: ["ubisoftMemory"],
+      }
+    },
     {
       id: "frontend",
       label: "Frontend",
@@ -388,19 +450,7 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         "Reduced server crashes by 15% through backend scalability hardening.",
         "Streamlined REST API and RPC implementation for efficient live-ops gameplay updates.",
       ],
-      stories: [
-        {
-          kicker: "Unity / C# · Live Title",
-          title: "Shipping live-ops features without breaking what's already live",
-          context:
-            "Live-ops titles can't afford downtime. Every change touches an active player base, so stability has to be maintained while the feature train keeps moving.",
-          details: [
-            "Hardened the Spring Boot backend behind American Dad! to cut server crash rate by 15%.",
-            "Strengthened the C# .NET client-server communication layer to handle edge cases in REST and RPC calls.",
-            "Retrofitted Git LFS for the art team — previously large assets were causing sync failures that blocked the whole pipeline.",
-          ],
-        },
-      ],
+      storyRefs: ["relianceLiveOps"],
       relatedProjects: ["ar-shooter", "spacebound"],
     },
     {
@@ -423,20 +473,7 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         "Co-designed and automated PS5 and Switch build pipelines with Jenkins and TeamCity, cutting deployment friction significantly.",
         "Mentored junior developers on coding best practices, raising the team's overall code quality.",
       ],
-      stories: [
-        {
-          kicker: "C++ · Memory Layout · Console",
-          title: "Memory budget management and data layout on PS5 and Switch",
-          context:
-            "Console certification requires precise memory control. The work was not just about using less memory — it was about understanding exactly how data is laid out in cache, what trips the platform compliance checker, and how to fix it.",
-          details: [
-            "Managed memory budgets across both Just Dance 2023 and Oddballers for PS5 and Nintendo Switch certification.",
-            "Optimised game memory layout — conscious struct alignment and access patterns — delivering a 20% improvement in profiled builds.",
-            "This is directly connected to the C++ / C# interop and marshalling work: understanding struct layout is the foundation of both.",
-          ],
-        },
-      ],
-      storyRefs: ["ubisoftInterop"],
+      storyRefs: ["ubisoftMemory", "ubisoftInterop"],
       relatedProjects: ["vulkangfx", "cpp-image-compression", "opengl"],
     },
     {
@@ -452,19 +489,7 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         "Migrated graphics testing suite to Unity's Scriptable Render Pipeline (SRP), improving visual fidelity and test coverage.",
         "Built automation tools for performance and runtime testing, cutting QA cycles by 30%.",
       ],
-      stories: [
-        {
-          kicker: "Unity · Engine Internals · Consulting",
-          title: "Diagnosing deep Unity engine bugs under production pressure",
-          context:
-            "Consulting means debugging code you didn't write, usually under urgency. This pushed me to read engine internals and reason about rendering and scene management paths from first principles.",
-          details: [
-            "Diagnosed and fixed Unity3D engine-level bugs for enterprise clients — required tracing through rendering and scene graph code to find root causes.",
-            "Migrated a graphics testing suite from the legacy render pipeline to SRP/URP without visual regressions, which required understanding both pipeline architectures deeply.",
-            "Built automation tooling for performance and runtime testing that cut QA cycles by 30%.",
-          ],
-        },
-      ],
+      storyRefs: ["rythmosEngineBugs"],
       relatedProjects: ["ar-shooter", "opengl"],
     },
   ],

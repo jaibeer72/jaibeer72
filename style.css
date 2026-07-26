@@ -993,6 +993,19 @@ body.sheet-open { position: fixed; width: 100%; overflow: hidden; }
   font-family: var(--font-mono);
 }
 
+.sheet-embed-container {
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+}
+.sheet-embed-container iframe {
+  max-width: 100%;
+  border-radius: var(--radius);
+}
+
 .sheet-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
 /* ---------- experience deep-dive button -------------------- */

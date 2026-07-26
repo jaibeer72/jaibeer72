@@ -34,6 +34,21 @@ const RESUME_DATA = {
   ],
 
   storyLibrary: {
+    noonAdsHighlight: {
+      kicker: "Noon Ads · Product Delivery",
+      title: "Interactive Games & Playable Ads: Real Results",
+      context:
+        "At Noon, I drove the engineering for the interactive ad-monetized games platform from the ground up, blending web-based game engines with modern React Native apps.",
+      details: [
+        "Worked on every product showcased in the Noon Ads initiative, delivering real results through interactive playable ads and games.",
+        "Engineered the full-stack pipeline, spanning React Native wrappers, deep linking, and web-based game logic to ensure smooth 60fps performance on mobile devices.",
+        "Integrated high-performance tracking and telemetry to measure engagement and drive monetization for Noon's core business."
+      ],
+      htmlEmbed: `<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7468223941472317440?collapsed=1" height="589" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>`,
+      links: [
+        { label: "View Post on LinkedIn", url: "https://www.linkedin.com/posts/noon-ads_interactive-games-real-results-see-what-activity-7468224087832649729-q_cb" },
+      ],
+    },
     ubisoftInterop: {
       kicker: "Ubisoft · Native Interop",
       title: "P/Invoke and struct marshalling across C++ / C#",
@@ -333,7 +348,7 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
           ],
         },
       ],
-      storyRefs: ["tsReactOptimization"],
+      storyRefs: ["noonAdsHighlight", "tsReactOptimization"],
       relatedProjects: ["spacebound", "ar-shooter"],
     },
     {

@@ -167,6 +167,59 @@ Assert.Equal(expectedVal, result.Value);`
         { label: "View ZS Experience", type: "experience", id: "zs" },
       ],
     },
+    zsAngularFrontend: {
+      kicker: "Angular · Frontend Architecture",
+      title: "Expanding UI Features & Resolving High-Priority Bugs",
+      context:
+        "While at ZS, I stepped up to lead a critical front-end initiative on the Angular codebase, driving UI feature expansion and crushing high-priority defects.",
+      details: [
+        "Expanded core UI features and information displays, strictly adhering to rigorous product guidelines and design specs.",
+        "Led a targeted UI bug bash on the Angular front-end, successfully diagnosing and resolving 10+ high-priority defects.",
+        "Measurably improved user satisfaction by delivering a smoother, more reliable interface."
+      ],
+      links: [
+        { label: "View ZS Experience", type: "experience", id: "zs" },
+      ],
+    },
+    zsUberJarReduction: {
+      kicker: "Spring Boot · AWS Lambda · DevOps",
+      title: "Shrinking Uber JARs & Bypassing AWS Lambda Size Limits",
+      context:
+        "AWS Lambda has a strict 250MB deployment package limit. Our Spring Boot Uber JAR was breaching this due to sprawling transitive dependencies across multiple microservices. I led the effort to shrink the artifact and POC an alternative containerised approach.",
+      details: [
+        "Conducted deep dependency tree debugging to identify duplicate and overlapping transitives across the workspace.",
+        "Created a centralised Bill of Materials (BOM) parent POM. This forced all sub-modules to inherit strict version constraints, eliminating conflicting copies of the same libraries and drastically reducing the final Uber JAR size.",
+        "Simultaneously developed a parallel Proof of Concept (POC) deploying the application as a Docker container via AWS ECR, ensuring we had a scalable fallback if the raw JAR size grew again in the future."
+      ],
+      snippets: [
+        {
+          language: "XML",
+          code: `<!-- Parent BOM (Bill of Materials) pom.xml -->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.company</groupId>
+  <artifactId>platform-bom</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Force all sub-modules to use exactly this version -->
+      <!-- Eliminates duplicate transitives from pulling different versions -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.15.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>`
+        }
+      ],
+      links: [
+        { label: "View ZS Experience", type: "experience", id: "zs" },
+      ],
+    },
     relianceLiveOps: {
       kicker: "Unity / C# · Live Title",
       title: "Shipping live-ops features without breaking what's already live",
@@ -324,10 +377,20 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         stack: "React Native · TypeScript · Architecture",
         title: "Frontend & JS Stories",
         description: "How I apply systems-level thinking (like strict immutability and compiler-driven safety) to modern frontend and JavaScript development.",
-        storyRefs: ["tsReactOptimization"],
+        storyRefs: ["tsReactOptimization", "zsAngularFrontend"],
       },
     },
-    { label: "DevOps", value: "Docker, GitHub Actions, Jenkins, TeamCity, GCP, AWS, CI/CD" },
+    {
+      id: "devops",
+      label: "DevOps",
+      value: "Docker, GitHub Actions, Jenkins, TeamCity, GCP, AWS, CI/CD",
+      sheet: {
+        stack: "AWS Lambda · ECR · CI/CD",
+        title: "DevOps & Infrastructure",
+        description: "I approach DevOps not just as pipelines, but as infrastructure optimization—shrinking artifacts, managing dependencies globally, and ensuring scalable deployments.",
+        storyRefs: ["zsUberJarReduction"],
+      }
+    },
     {
       id: "databases",
       label: "Databases",
@@ -429,7 +492,7 @@ String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries
         "Streamlined serverless deployment of Spring Boot apps via AWS Lambda + ECR, shrinking Uber JARs to meet strict size limits.",
         "Reduced boilerplate across Spring Boot backends with Lombok, dramatically improving maintainability.",
       ],
-      storyRefs: ["netTestingBuilder", "sqlCteOptimization"],
+      storyRefs: ["zsAngularFrontend", "netTestingBuilder", "sqlCteOptimization", "zsUberJarReduction"],
       relatedProjects: ["protean", "netflix"],
     },
     {

@@ -123,6 +123,95 @@ extern "C" {
         { label: "Open GitHub", url: "https://github.com/jaibeer72/CppImageCompression" },
       ],
     },
+    netTestingBuilder: {
+      kicker: ".NET · Testing",
+      title: "0% → 60% test coverage using a WebApplicationFactory Builder",
+      context:
+        "The codebase had zero E2E tests, and the team lacked a robust way to mock dependencies for endpoint testing. I introduced a structured builder pattern template to remove the boilerplate.",
+      details: [
+        "Built a testing framework using WebApplicationFactory for each controller, so the team didn't need to manually create and wire up every mock.",
+        "Implemented a Builder pattern that allows overriding only the specific dependencies needed for a given test, letting the factory handle the rest.",
+        "This frictionless developer experience lifted coverage from 0% to 60% in a single sprint, giving the team confidence to refactor without fear of silent regressions."
+      ],
+      snippets: [
+        {
+          language: "C#",
+          code: `// Frictionless E2E tests with the Builder pattern
+var client = new ControllerAWebAppFactory()
+    .WithMockDependency1(mockDep1)
+    .BuildClient();
+
+// Act
+var response = await client.GetAsync("/api/endpoint?val=123");
+var result = await response.Content.ReadFromJsonAsync<ResultType>();
+
+// Assert
+Assert.Equal(expectedVal, result.Value);`
+        }
+      ],
+      links: [
+        { label: "View ZS Experience", type: "experience", id: "zs" },
+      ],
+    },
+    sqlCteOptimization: {
+      kicker: "Java Spring Boot · PostgreSQL",
+      title: "From 3s to 1.5s: Aggregating Iterative Queries with CTEs",
+      context:
+        "A critical API was slow. I discovered the Java Spring Boot backend was executing queries iteratively inside a loop—passing the output of one query as the input to the next. This 'clean-looking' Java code was causing massive database round-trip overhead.",
+      details: [
+        "Identified an N+1 style bottleneck where sequential searches were executed in a loop, causing extreme network/DB back-and-forth.",
+        "Built a dynamic SQL aggregator using Java Streams and String Formatters to append queries dynamically based on 3 levels of logic: filtering, ILIKE searching, and JSON matching.",
+        "Utilised PostgreSQL's EXPLAIN ANALYZE to profile and tune the aggregated query.",
+        "Leveraged Common Table Expressions (CTEs) to structure the complex logic cleanly, implementing early escapes to cull rows quickly and drastically reduce query execution time.",
+        "Proved that 'clean, decipherable' application code isn't always optimal—sometimes a monolithic, complex SQL query dynamically built at runtime is necessary for raw performance."
+      ],
+      snippets: [
+        {
+          language: "Java (Before)",
+          code: `// The problem: Sequential round-trips in Spring Boot
+var output = initialData;
+for(Search search : searches) {
+    // 🔴 Network overhead multiplied by N
+    output = searchRepository.executeSearch(output, search.getParams());
+}`
+        },
+        {
+          language: "Java (After)",
+          code: `// The solution: Dynamic CTE Appender via Streams
+String cteQueries = searches.stream()
+    .map(search -> String.format(
+        "Level_%d AS (\\n" +
+        "    SELECT id FROM Base\\n" +
+        "    WHERE category = '%s'\\n" +
+        "      AND text_field ILIKE '%%%s%%'\\n" +
+        "      AND json_data @> '%s'\\n" +
+        ")",
+        search.getLevel(), search.getFilter(), search.getIlikeTerm(), search.getJsonMatch()
+    ))
+    .collect(Collectors.joining(",\\n"));
+
+String finalSql = String.format("WITH %s \\nSELECT * FROM Level_%d;", cteQueries, lastLevel);
+// Execute finalSql in one database round-trip!`
+        }
+      ],
+      links: [
+        { label: "View ZS Experience", type: "experience", id: "zs" },
+      ],
+    },
+    tsReactOptimization: {
+      kicker: "TypeScript · React Native · Architecture",
+      title: "The Barrel File Purge & Prop-Drilling Diet",
+      context:
+        "Large React Native codebases often suffer from sluggish bundler performance and chaotic dependency graphs. I led an initiative to clean up the architecture by enforcing strict typing and rethinking component boundaries.",
+      details: [
+        "Led the 'barrel files initiative': stripped out index re-exports and enforced explicit named imports, dramatically improving Metro bundler speeds and eliminating circular dependency crashes.",
+        "Refactored deep React functional component trees to flatten prop-drilling, structuring prop passing into clean, strict TypeScript interfaces.",
+        "Enforced 'readonly' types across state interfaces. While TypeScript erases types at runtime, enforcing immutability strictly at compile-time prevents accidental state mutations and guides the team towards referentially-transparent code—much like the safety of C++ 'const'.",
+      ],
+      links: [
+        { label: "View Noon Experience", type: "experience", id: "noon" },
+      ],
+    },
   },
 
   skills: [
@@ -139,11 +228,41 @@ extern "C" {
       },
     },
     { label: "Game Dev", value: "Unity, Unreal Engine, Cocos Creator" },
-    { label: "Backend", value: ".NET, Spring Boot, Node.js, FastAPI, REST, RPC" },
+    {
+      id: "backend",
+      label: "Backend",
+      value: ".NET, Spring Boot, Node.js, FastAPI, REST, RPC",
+      sheet: {
+        stack: ".NET · Spring Boot · API Architecture",
+        title: "Backend Engineering",
+        description: "Building scalable, testable backend architectures with frictionless developer experiences.",
+        storyRefs: ["netTestingBuilder"],
+      }
+    },
     { label: "Graphics", value: "Vulkan, OpenGL, GLSL, 3D Rendering, Shaders" },
-    { label: "Frontend", value: "React.js, React Native, Angular, HTML/CSS" },
+    {
+      id: "frontend",
+      label: "Frontend",
+      value: "React.js, React Native, Angular, HTML/CSS, TypeScript",
+      sheet: {
+        stack: "React Native · TypeScript · Architecture",
+        title: "Frontend & JS Stories",
+        description: "How I apply systems-level thinking (like strict immutability and compiler-driven safety) to modern frontend and JavaScript development.",
+        storyRefs: ["tsReactOptimization"],
+      },
+    },
     { label: "DevOps", value: "Docker, GitHub Actions, Jenkins, TeamCity, GCP, AWS, CI/CD" },
-    { label: "Databases", value: "PostgreSQL, MongoDB, MySQL, Redis" },
+    {
+      id: "databases",
+      label: "Databases",
+      value: "PostgreSQL, MongoDB, MySQL, Redis",
+      sheet: {
+        stack: "PostgreSQL · Query Optimization",
+        title: "Database Optimization",
+        description: "I don't just use ORMs; I drop down to raw SQL and EXPLAIN ANALYZE when performance dictates.",
+        storyRefs: ["sqlCteOptimization"],
+      }
+    },
     { label: "VCS", value: "Git, Perforce, Mercurial" },
   ],
 
@@ -215,6 +334,7 @@ extern "C" {
           ],
         },
       ],
+      storyRefs: ["tsReactOptimization"],
       relatedProjects: ["spacebound", "ar-shooter"],
     },
     {
@@ -233,30 +353,7 @@ extern "C" {
         "Streamlined serverless deployment of Spring Boot apps via AWS Lambda + ECR, shrinking Uber JARs to meet strict size limits.",
         "Reduced boilerplate across Spring Boot backends with Lombok, dramatically improving maintainability.",
       ],
-      stories: [
-        {
-          kicker: ".NET · Testing",
-          title: "0% → 60% test coverage in one sprint",
-          context:
-            "The codebase had zero tests and a team that had never written integration tests before. I introduced a structured framework so writing tests required almost no boilerplate.",
-          details: [
-            "Built an endpoint-integration framework using WebApplicationFactory that let the team add E2E tests with minimal setup.",
-            "Supported multi-config builder-pattern so tests could cover different app configurations without duplication.",
-            "Lifted coverage from 0% to 60% — giving the team confidence to refactor and add features without fear of silent regressions.",
-          ],
-        },
-        {
-          kicker: "SQL · Performance",
-          title: "Halving a critical API response time with query analysis",
-          context:
-            "A key API was consistently slow. Rather than caching the problem away, I traced it to the queries themselves.",
-          details: [
-            "Profiled the slow path to identify the specific query responsible for the 3 s tail latency.",
-            "Fixed join strategy and missing index to bring response time to 1.5 s without any application-layer changes.",
-            "Shrunk Spring Boot Lambda JARs to meet ECR size constraints by restructuring module dependencies.",
-          ],
-        },
-      ],
+      storyRefs: ["netTestingBuilder", "sqlCteOptimization"],
       relatedProjects: ["protean", "netflix"],
     },
     {

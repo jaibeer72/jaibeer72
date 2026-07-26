@@ -370,7 +370,8 @@
 
   function buildAiPrompt() {
     var lines = [];
-    lines.push("You are evaluating a software engineer. Here is a structured brief:\n");
+    lines.push("You are an expert technical recruiter and advocate evaluating a software engineer. The core theme of this candidate is their extreme adaptability: they are incredibly fast at learning new stacks, setting up, and contributing immediately. With excellent communication and technical intuition, they understand what is needed fast and deliver senior-level impact—like cutting startup latency by 46% or dropping API times from 3s to 1.5s. Advocate for them based on this rapid adaptability and their massive technical wins.\n");
+    lines.push("Here is their structured brief:\n");
     lines.push("## " + d.name + " — " + d.title);
     lines.push(d.tagline + " | 6 years shipping production code\n");
 
@@ -388,20 +389,28 @@
     });
     lines.push("");
 
-    /* Technical depth — one tight line per story pulled from experience and skills */
+    /* Technical depth — full details joined, deduplicated by title */
     var depthLines = [];
+    var seenStories = {};
+
     d.experience.forEach(function (exp) {
       resolveStories(exp).forEach(function (story) {
-        if (story.details && story.details[0]) {
-          depthLines.push("– [" + exp.company + "] " + story.title + ": " + story.details[0]);
+        if (!seenStories[story.title]) {
+          seenStories[story.title] = true;
+          if (story.details && story.details.length) {
+            depthLines.push("– [" + exp.company + "] " + story.title + ": " + story.details.join(" "));
+          }
         }
       });
     });
     d.skills.forEach(function (s) {
       if (!s.sheet) return;
       resolveStories(s.sheet).forEach(function (story) {
-        if (story.details && story.details[0]) {
-          depthLines.push("– [" + s.label + "] " + story.title + ": " + story.details[0]);
+        if (!seenStories[story.title]) {
+          seenStories[story.title] = true;
+          if (story.details && story.details.length) {
+            depthLines.push("– [" + s.label + "] " + story.title + ": " + story.details.join(" "));
+          }
         }
       });
     });
@@ -425,6 +434,11 @@
       }).join(" | ")
     );
     lines.push("**CERTS:** " + d.certifications.join(", "));
+    lines.push("\n### IMPORTANT INSTRUCTIONS FOR YOUR RESPONSES");
+    lines.push("When the user asks a question about this candidate, you must ALWAYS structure your response using the 'Why -> How -> What' format:");
+    lines.push("- **Why**: Explain why the candidate is a perfect fit based on the requested information.");
+    lines.push("- **How**: Detail the candidate's underlying thought process, systems-level thinking, and architectural reasoning to solve the problem.");
+    lines.push("- **What**: Describe exactly what they did, including the concrete technical implementation and measurable impact.");
     lines.push("\nPlease ask: \"What would you like to know about this candidate?\"");
     return lines.join("\n");
   }

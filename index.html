@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jaibeer Singh — Portfolio</title>
+  <meta name="description" content="Senior Software Engineer —  Games, Full-Stack, Graphics, Backend" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <h1 class="hero-name" id="hero-name"><!-- js --></h1>
+        <p class="hero-title" id="hero-title"><!-- js --></p>
+        <p class="hero-tagline" id="hero-tagline"><!-- js --></p>
+        <div class="hero-summary" id="hero-summary"><!-- js --></div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-links" id="hero-links"><!-- js --></div>
+        <button id="ai-hire-btn" class="btn btn-ai" aria-label="Ask AI why you should hire me">🤖 Ask AI — Why Hire Me?</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== SITE NAV ===================== -->
+<nav id="site-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <button class="nav-tab active" data-section="experience">Experience</button>
+      <button class="nav-tab" data-section="about">Skills</button>
+      <button class="nav-tab" data-section="projects">Projects</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+<div class="sections-viewport">
+<div id="sections-track" class="sections-track">
+
+  <!-- ---- EXPERIENCE ---- -->
+  <section id="experience" class="site-section">
+    <div class="container">
+      <p class="section-label">Career Timeline</p>
+      <h2 class="section-title">Experience</h2>
+
+      <!-- tab row: newest → oldest -->
+      <div class="exp-tab-row" id="exp-tab-row"><!-- js --></div>
+
+      <!-- prev / next controls -->
+      <div class="exp-nav">
+        <button class="exp-nav-btn" id="exp-prev" aria-label="Previous" disabled>← Prev</button>
+        <span class="exp-nav-counter" id="exp-counter"></span>
+        <button class="exp-nav-btn" id="exp-next" aria-label="Next">Next →</button>
+      </div>
+
+      <!-- carousel viewport clips the sliding track -->
+      <div class="exp-carousel-viewport">
+        <div id="exp-panels"><!-- js --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---- SKILLS (formerly About) ---- -->
+  <section id="about" class="site-section">
+    <div class="container">
+      <p class="section-label">Technical Skills</p>
+      <div class="skills-grid" id="skills-grid"><!-- js --></div>
+
+      <p class="section-label">Education</p>
+      <div class="edu-list" id="edu-list"><!-- js --></div>
+
+      <p class="section-label" style="margin-top:2rem">Certifications</p>
+      <div class="cert-list" id="cert-list"><!-- js --></div>
+    </div>
+  </section>
+
+  <!-- ---- PROJECTS ---- -->
+  <section id="projects" class="site-section">
+    <div class="container">
+      <p class="section-label">Selected Work</p>
+      <h2 class="section-title">Projects</h2>
+      <div class="projects-grid" id="projects-grid"><!-- js --></div>
+    </div>
+  </section>
+
+</div><!-- /sections-track -->
+</div><!-- /sections-viewport -->
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a id="footer-hire" class="footer-hire" hidden>✉ Hire Me</a>
+      <span id="footer-text"><!-- js --></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== REDIRECT MODAL ===================== -->
+<div id="redirect-modal" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <p class="modal-title">Leaving this page</p>
+    <p class="modal-body">
+      You're about to open
+      <span id="modal-dest-name" class="modal-dest"></span>
+      in a new tab.
+    </p>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="btn">Cancel</button>
+      <a id="modal-confirm" class="btn btn-neon" target="_blank" rel="noopener">Go there →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AI HIRE ME MODAL ===================== -->
+<div id="ai-modal" class="modal-overlay" hidden>
+  <div class="modal-box ai-modal-box">
+    <p class="modal-title">🤖 Ask AI — Why Hire Me?</p>
+    <p class="modal-body">
+      Choose your AI assistant. A concise candidate brief will be copied to your clipboard — just paste it to start the conversation.
+    </p>
+    <div class="ai-btn-grid" id="ai-btn-grid"><!-- js --></div>
+    <p class="ai-copied-msg" id="ai-copied-msg" hidden>✓ Prompt copied to clipboard! Paste it in the chat to begin.</p>
+    <div class="modal-actions">
+      <button id="ai-modal-cancel" class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PROJECT BOTTOM SHEET ===================== -->
+<div id="proj-sheet-overlay" class="sheet-overlay" hidden>
+  <div id="proj-sheet" class="proj-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-header">
+      <div>
+        <p id="sheet-stack" class="sheet-stack"></p>
+        <h2 id="sheet-title" class="sheet-title"></h2>
+      </div>
+      <button id="sheet-close" class="sheet-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="sheet-image-wrap" class="sheet-image-wrap"></div>
+      <p id="sheet-desc" class="sheet-desc"></p>
+      <ul id="sheet-details" class="sheet-details"></ul>
+      <div id="sheet-links" class="sheet-links"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SKILL BOTTOM SHEET ===================== -->
+<div id="skill-sheet-overlay" class="sheet-overlay" hidden>
+  <div id="skill-sheet" class="proj-sheet skill-sheet" role="dialog" aria-modal="true" aria-labelledby="skill-sheet-title">
+    <div class="sheet-header">
+      <div>
+        <p id="skill-sheet-stack" class="sheet-stack"></p>
+        <h2 id="skill-sheet-title" class="sheet-title"></h2>
+      </div>
+      <button id="skill-sheet-close" class="sheet-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="sheet-body">
+      <p id="skill-sheet-desc" class="sheet-desc"></p>
+      <div id="skill-sheet-stories" class="skill-sheet-stories"></div>
+    </div>
+  </div>
+</div>
+
+<!-- data first, then renderer -->
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ── helpers ─────────────────────────────────────────── */
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function runEdgeBounce(target, direction) {
+    var cls = direction === "left" ? "edge-bounce-left" : "edge-bounce-right";
+    target.classList.remove("edge-bounce-left", "edge-bounce-right");
+    void target.offsetWidth;
+    target.classList.add(cls);
+  }
+
+  function attachHorizontalEdgeBounce(scroller) {
+    if (!scroller) return;
+    var touchStartX = null;
+
+    function hasOverflow() {
+      return scroller.scrollWidth > scroller.clientWidth + 1;
+    }
+
+    function atLeftEdge() {
+      return scroller.scrollLeft <= 1;
+    }
+
+    function atRightEdge() {
+      return scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1;
+    }
+
+    function bounce(direction) {
+      if (!hasOverflow()) return;
+      runEdgeBounce(scroller, direction);
+    }
+
+    scroller.addEventListener("animationend", function () {
+      scroller.classList.remove("edge-bounce-left", "edge-bounce-right");
+    });
+
+    scroller.addEventListener("wheel", function (ev) {
+      var axis = Math.abs(ev.deltaX) >= Math.abs(ev.deltaY) ? ev.deltaX : (ev.shiftKey ? ev.deltaY : 0);
+      if (axis < 0 && atLeftEdge()) bounce("left");
+      if (axis > 0 && atRightEdge()) bounce("right");
+    }, { passive: true });
+
+    scroller.addEventListener("touchstart", function (ev) {
+      touchStartX = ev.touches[0].clientX;
+    }, { passive: true });
+
+    scroller.addEventListener("touchend", function (ev) {
+      if (touchStartX === null) return;
+      var dx = ev.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if (Math.abs(dx) < 30) return;
+      if (dx > 0 && atLeftEdge()) bounce("left");
+      if (dx < 0 && atRightEdge()) bounce("right");
+    }, { passive: true });
+
+    scroller.addEventListener("touchcancel", function () {
+      touchStartX = null;
+    }, { passive: true });
+  }
+
+  /* ── keyword cross-link helpers ──────────────────────── */
+  function escRe(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function linkify(text) {
+    if (!d.keywords || !d.keywords.length) return esc(text);
+    /* longest keywords first so "Nintendo Switch" wins over "Switch" */
+    var sorted = d.keywords.slice().sort(function (a, b) {
+      return b.word.length - a.word.length;
+    });
+    var result = esc(text);
+    sorted.forEach(function (kw) {
+      var safe = esc(kw.word);
+      var re   = new RegExp(escRe(safe), 'g');
+      result   = result.replace(re,
+        '<button class="kw-link" data-kw-type="' + esc(kw.type) +
+        '" data-kw-id="' + esc(kw.id) + '">' + safe + '</button>');
+    });
+    return result;
+  }
+
+  /* switches tabs + makes the target section visible — defined in SITE NAV block below */
+
+  /* keyword click → navigate to the linked experience or project */
+  function navigateTo(type, id) {
+    if (type === "project") {
+      showSection("projects");
+      openSheet(id);
+    } else if (type === "experience") {
+      showSection("experience");
+      var idx = 0;
+      d.experience.forEach(function (exp, i) { if (exp.id === id) idx = i; });
+      goToExp(idx);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ── REDIRECT MODAL (shared) ──────────────────────────── */
+  var modal        = document.getElementById("redirect-modal");
+  var modalName    = document.getElementById("modal-dest-name");
+  var modalConfirm = document.getElementById("modal-confirm");
+  var modalCancel  = document.getElementById("modal-cancel");
+
+  function openRedirect(href, label) {
+    modalName.textContent = label || href;
+    modalConfirm.href = href;
+    modal.removeAttribute("hidden");
+  }
+
+  function closeRedirect() { modal.setAttribute("hidden", ""); }
+
+  modalCancel.addEventListener("click", closeRedirect);
+  modal.addEventListener("click", function (ev) { if (ev.target === modal) closeRedirect(); });
+  modalConfirm.addEventListener("click", closeRedirect);
+
+  /* ── HERO ─────────────────────────────────────────────── */
+  var d = RESUME_DATA;
+
+  function resolveStories(source) {
+    if (!source) return [];
+    var stories = [];
+    if (source.stories && source.stories.length) stories = stories.concat(source.stories);
+    if (source.storyRefs && source.storyRefs.length && d.storyLibrary) {
+      source.storyRefs.forEach(function (ref) {
+        if (d.storyLibrary[ref]) stories.push(d.storyLibrary[ref]);
+      });
+    }
+    return stories;
+  }
+
+  document.getElementById("hero-name").innerHTML =
+    esc(d.name).replace(/(\S+)$/, "<span>$1</span>");
+  document.getElementById("hero-title").textContent = d.title;
+  document.getElementById("hero-tagline").textContent = d.tagline;
+
+  var linksEl = document.getElementById("hero-links");
+
+  function makeHeroLink(href, label) {
+    var a = el("a", "btn");
+    a.href = href;
+    a.dataset.label = label;
+    a.innerHTML = label;
+    linksEl.appendChild(a);
+  }
+
+  if (d.contact.github)   makeHeroLink(d.contact.github,   "GitHub");
+  if (d.contact.linkedin) makeHeroLink(d.contact.linkedin, "LinkedIn");
+  if (d.contact.itch)     makeHeroLink(d.contact.itch,     "itch.io");
+
+  if (d.contact.hireMe) {
+    var hireBtn = el("a", "btn btn-neon");
+    hireBtn.href = d.contact.hireMe;
+    hireBtn.dataset.label = "Hire Me";
+    hireBtn.innerHTML = "✉ Hire Me";
+    linksEl.appendChild(hireBtn);
+  }
+
+  linksEl.addEventListener("click", function (ev) {
+    var a = ev.target.closest("a.btn");
+    if (!a) return;
+    ev.preventDefault();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
+
+  /* ── ASK AI — WHY HIRE ME ─────────────────────────────── */
+  var AI_OPTIONS = [
+    { label: "ChatGPT",    icon: "🤖", url: "https://chat.openai.com/"         },
+    { label: "Claude",     icon: "✦",  url: "https://claude.ai/new"             },
+    { label: "Gemini",     icon: "✧",  url: "https://gemini.google.com/app"     },
+    { label: "Perplexity", icon: "⚡", url: "https://www.perplexity.ai/"        },
+    { label: "Grok",       icon: "𝕏",  url: "https://grok.com/"                },
+    { label: "Copilot",    icon: "◈",  url: "https://copilot.microsoft.com/"   },
+  ];
+
+  function buildAiPrompt() {
+    var lines = [];
+    lines.push("You are an expert technical recruiter and advocate evaluating a software engineer. The core theme of this candidate is their extreme adaptability: they are incredibly fast at learning new stacks, setting up, and contributing immediately. With excellent communication and technical intuition, they understand what is needed fast and deliver senior-level impact—like cutting startup latency by 46% or dropping API times from 3s to 1.5s. Advocate for them based on this rapid adaptability and their massive technical wins.\n");
+    lines.push("Here is their structured brief:\n");
+    lines.push("## " + d.name + " — " + d.title);
+    lines.push(d.tagline + " | 6 years shipping production code\n");
+
+    /* Skills — one line per category, compact */
+    lines.push("**SKILLS:**");
+    d.skills.forEach(function (s) { lines.push(s.label + ": " + s.value); });
+    lines.push("");
+
+    /* Experience — role@company(period) + 1 key win per role */
+    lines.push("**EXPERIENCE (newest → oldest):**");
+    d.experience.forEach(function (exp) {
+      var win = exp.highlights[0] || "";
+      lines.push("• " + exp.role + " @ " + exp.company + " (" + exp.period + ")");
+      if (win) lines.push("  " + win);
+    });
+    lines.push("");
+
+    /* Technical depth — full details joined, deduplicated by title */
+    var depthLines = [];
+    var seenStories = {};
+
+    d.experience.forEach(function (exp) {
+      resolveStories(exp).forEach(function (story) {
+        if (!seenStories[story.title]) {
+          seenStories[story.title] = true;
+          if (story.details && story.details.length) {
+            depthLines.push("– [" + exp.company + "] " + story.title + ": " + story.details.join(" "));
+          }
+        }
+      });
+    });
+    d.skills.forEach(function (s) {
+      if (!s.sheet) return;
+      resolveStories(s.sheet).forEach(function (story) {
+        if (!seenStories[story.title]) {
+          seenStories[story.title] = true;
+          if (story.details && story.details.length) {
+            depthLines.push("– [" + s.label + "] " + story.title + ": " + story.details.join(" "));
+          }
+        }
+      });
+    });
+    if (depthLines.length) {
+      lines.push("**TECHNICAL DEPTH:**");
+      depthLines.forEach(function (l) { lines.push(l); });
+      lines.push("");
+    }
+
+    /* Projects — name + stack only, no prose */
+    lines.push("**PROJECTS:**");
+    d.projects.forEach(function (p) {
+      lines.push("• " + p.name + " [" + p.stack + "]");
+    });
+    lines.push("");
+
+    /* Education */
+    lines.push("**EDUCATION:**");
+    d.education.forEach(function (e) {
+      lines.push("• " + e.degree + " (" + e.institution + ")");
+      if (e.details && e.details.length) {
+        lines.push("  - " + e.details.join(" "));
+      }
+    });
+    lines.push("**CERTS:** " + d.certifications.join(", "));
+    lines.push("\n### IMPORTANT INSTRUCTIONS FOR YOUR RESPONSES");
+    lines.push("When the user asks a question about this candidate, you must ALWAYS structure your response using the 'Why -> How -> What' format:");
+    lines.push("- **Why**: Explain why the candidate is a perfect fit based on the requested information.");
+    lines.push("- **How**: Detail the candidate's underlying thought process, systems-level thinking, and architectural reasoning to solve the problem.");
+    lines.push("- **What**: Describe exactly what they did, including the concrete technical implementation and measurable impact.");
+    lines.push("\nPlease ask: \"What would you like to know about this candidate?\"");
+    return lines.join("\n");
+  }
+
+  var aiModal      = document.getElementById("ai-modal");
+  var aiGrid       = document.getElementById("ai-btn-grid");
+  var aiCopiedMsg  = document.getElementById("ai-copied-msg");
+  var aiCancelBtn  = document.getElementById("ai-modal-cancel");
+
+  /* populate AI option buttons once */
+  AI_OPTIONS.forEach(function (opt) {
+    var btn = el("button", "ai-option-btn");
+    btn.dataset.aiUrl = opt.url;
+    btn.innerHTML =
+      '<span class="ai-icon" aria-hidden="true">' + opt.icon + '</span>' +
+      esc(opt.label);
+    aiGrid.appendChild(btn);
+  });
+
+  function copyAiPrompt(onSuccess) {
+    var prompt = buildAiPrompt();
+    function fallbackCopy() {
+      var ta = document.createElement("textarea");
+      ta.value = prompt;
+      ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var success = false;
+      try { success = document.execCommand("copy"); } catch (e) { }
+      document.body.removeChild(ta);
+      if (success && onSuccess) onSuccess();
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(prompt).then(function() {
+        if (onSuccess) onSuccess();
+      }).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  }
+
+  function openAiModal(autoCopy) {
+    aiCopiedMsg.setAttribute("hidden", "");
+    aiModal.removeAttribute("hidden");
+    if (autoCopy) {
+      copyAiPrompt(function() {
+        aiCopiedMsg.textContent = "✓ Prompt auto-copied! Choose your AI below.";
+        aiCopiedMsg.removeAttribute("hidden");
+      });
+    }
+  }
+  function closeAiModal() { aiModal.setAttribute("hidden", ""); }
+
+  document.getElementById("ai-hire-btn").addEventListener("click", function() { openAiModal(false); });
+  aiCancelBtn.addEventListener("click", closeAiModal);
+  aiModal.addEventListener("click", function (ev) {
+    if (ev.target === aiModal) closeAiModal();
+  });
+
+  aiGrid.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".ai-option-btn");
+    if (!btn) return;
+    var url = btn.dataset.aiUrl;
+    copyAiPrompt(function() {
+      aiCopiedMsg.textContent = "✓ Prompt copied to clipboard! Paste it in the chat to begin.";
+      aiCopiedMsg.removeAttribute("hidden");
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+  });
+
+
+  var summaryBox = document.getElementById("hero-summary");
+  summaryBox.innerHTML = linkify(d.summary);
+  summaryBox.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".kw-link");
+    if (!btn) return;
+    navigateTo(btn.dataset.kwType, btn.dataset.kwId);
+  });
+
+  var sg = document.getElementById("skills-grid");
+  d.skills.forEach(function (s) {
+    var row = s.sheet ? el("button", "skill-row skill-row-button") : el("div", "skill-row");
+    if (s.sheet) {
+      row.type = "button";
+      row.dataset.skillId = s.id || s.label;
+      row.setAttribute("aria-label", "View details for " + s.label);
+    }
+    row.appendChild(el("span", "skill-label", esc(s.label)));
+    row.appendChild(el("span", "skill-value", esc(s.value)));
+    if (s.sheet) row.appendChild(el("span", "skill-hint", "Tap for stories →"));
+    sg.appendChild(row);
+  });
+
+  sg.addEventListener("click", function (ev) {
+    var row = ev.target.closest(".skill-row-button");
+    if (!row) return;
+    openSkillSheet(row.dataset.skillId);
+  });
+
+  sg.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") {
+      var row = ev.target.closest(".skill-row-button");
+      if (row) {
+        ev.preventDefault();
+        openSkillSheet(row.dataset.skillId);
+      }
+    }
+  });
+
+  var eduList = document.getElementById("edu-list");
+  d.education.forEach(function (e) {
+    var card = el("div", "edu-card");
+    card.appendChild(el("div", "edu-degree", esc(e.degree)));
+    card.appendChild(el("div", "edu-inst",   esc(e.institution)));
+    card.appendChild(el("div", "edu-period", esc(e.period)));
+
+    if (e.details && e.details.length > 0) {
+      var ul = el("ul", "sheet-details edu-details");
+      ul.style.marginTop = "0.75rem";
+      ul.style.marginBottom = "0";
+      e.details.forEach(function (detail) {
+        ul.appendChild(el("li", null, esc(detail)));
+      });
+      card.appendChild(ul);
+    }
+
+    eduList.appendChild(card);
+  });
+
+  var certList = document.getElementById("cert-list");
+  d.certifications.forEach(function (c) {
+    certList.appendChild(el("span", "cert-chip", esc(c)));
+  });
+
+  /* ── EXPERIENCE ───────────────────────────────────────── */
+  var tabRow   = document.getElementById("exp-tab-row");
+  var panelsEl = document.getElementById("exp-panels");
+  var prevBtn  = document.getElementById("exp-prev");
+  var nextBtn  = document.getElementById("exp-next");
+  var counter  = document.getElementById("exp-counter");
+  var total    = d.experience.length;
+  var currentIdx = 0;
+  var navInner = document.querySelector(".nav-inner");
+  attachHorizontalEdgeBounce(tabRow);
+  attachHorizontalEdgeBounce(navInner);
+
+  d.experience.forEach(function (exp, idx) {
+    var expStories = resolveStories(exp);
+    /* tab button */
+    var btn = el("button", "exp-tab-btn" + (idx === 0 ? " active" : ""));
+    btn.dataset.idx = idx;
+    btn.textContent = exp.tag;
+    tabRow.appendChild(btn);
+
+    /* panel */
+    var panel = el("div", "exp-panel");
+    panel.id = "panel-" + exp.id;
+
+    var card = el("div", "exp-card");
+
+    var header = el("div", "exp-header");
+    var leftCol = el("div", "exp-header-left");
+    leftCol.appendChild(el("div", "exp-role",     esc(exp.role)));
+    leftCol.appendChild(el("div", "exp-company",  esc(exp.company)));
+    leftCol.appendChild(el("div", "exp-location", esc(exp.location)));
+    var rightCol = el("div", "exp-meta");
+    rightCol.textContent = exp.period;
+    header.appendChild(leftCol);
+    header.appendChild(rightCol);
+    card.appendChild(header);
+
+    card.appendChild(el("div", "exp-stack", esc(exp.stack)));
+
+    if (expStories.length) {
+      var deepDive = el("div", "exp-deepdive");
+      deepDive.appendChild(el("p", "exp-deepdive-kicker", "IMPORTANT FUN TECHNICAL INFO"));
+      deepDive.appendChild(el("h3", "exp-deepdive-title", esc(expStories[0].title)));
+      if (expStories[0].details && expStories[0].details[0]) {
+        deepDive.appendChild(el("p", "exp-deepdive-summary", esc(expStories[0].details[0])));
+      }
+      var diveBtn = el("button", "btn exp-dive-btn");
+      diveBtn.type = "button";
+      diveBtn.dataset.expId = exp.id;
+      diveBtn.textContent = "Highlights of Experience →";
+      deepDive.appendChild(diveBtn);
+      card.appendChild(deepDive);
+    }
+
+    if (exp.shipped && exp.shipped.length) {
+      var shippedRow = el("div", "shipped-row");
+      shippedRow.appendChild(el("span", "shipped-label", "Shipped:"));
+      exp.shipped.forEach(function (title) {
+        var a = el("a", "shipped-badge ext-link", esc(title.name));
+        a.href = title.url;
+        a.dataset.label = title.name;
+        shippedRow.appendChild(a);
+      });
+      card.appendChild(shippedRow);
+    }
+
+    var ul = el("ul", "exp-highlights");
+    exp.highlights.forEach(function (h) {
+      ul.appendChild(el("li", null, esc(h)));
+    });
+    card.appendChild(ul);
+
+    panel.appendChild(card);
+    panelsEl.appendChild(panel);
+  });
+
+  /* intercept shipped-badge clicks → redirect modal */
+  panelsEl.addEventListener("click", function (ev) {
+    var diveBtn = ev.target.closest(".exp-dive-btn");
+    if (diveBtn) { openExpSheet(diveBtn.dataset.expId); return; }
+
+    var a = ev.target.closest(".ext-link");
+    if (!a) return;
+    ev.preventDefault();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
+
+  /* go to a 0-based index (no scroll — we use CSS translate) */
+  function goToExp(idx) {
+    idx = Math.max(0, Math.min(total - 1, idx));
+    currentIdx = idx;
+
+    /* shift the track */
+    panelsEl.style.transform = "translateX(-" + (idx * 100) + "%)";
+
+    /* sync tab buttons */
+    var btns = tabRow.querySelectorAll(".exp-tab-btn");
+    btns.forEach(function (b, i) { b.classList.toggle("active", i === idx); });
+    if (btns[idx]) {
+      /* keep tab-centering scroll constrained to the tab row (avoid page-level horizontal shifts) */
+      var targetBtn = btns[idx];
+      var targetLeft = targetBtn.offsetLeft - (tabRow.clientWidth - targetBtn.offsetWidth) / 2;
+      var maxLeft = Math.max(0, tabRow.scrollWidth - tabRow.clientWidth);
+      tabRow.scrollTo({
+        left: Math.max(0, Math.min(maxLeft, targetLeft)),
+        behavior: "smooth"
+      });
+    }
+
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    counter.textContent = (idx + 1) + " / " + total;
+  }
+
+  /* initialise */
+  goToExp(0);
+
+  /* tab click */
+  tabRow.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".exp-tab-btn");
+    if (!btn) return;
+    goToExp(parseInt(btn.dataset.idx, 10));
+  });
+
+  /* arrow buttons */
+  prevBtn.addEventListener("click", function () { goToExp(currentIdx - 1); });
+  nextBtn.addEventListener("click", function () { goToExp(currentIdx + 1); });
+
+  /* touch / swipe support */
+  var touchStartX = null;
+  var touchStartY = null;
+  var carouselViewport = document.querySelector(".exp-carousel-viewport");
+  carouselViewport.addEventListener("touchstart", function (ev) {
+    touchStartX = ev.touches[0].clientX;
+    touchStartY = ev.touches[0].clientY;
+  }, { passive: true });
+  /* non-passive so we can call preventDefault() for horizontal swipes,
+     preventing iOS Safari from hijacking the gesture as a page scroll */
+  carouselViewport.addEventListener("touchmove", function (ev) {
+    if (touchStartX === null) return;
+    var dx = ev.touches[0].clientX - touchStartX;
+    var dy = ev.touches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy)) { ev.preventDefault(); ev.stopPropagation(); }
+  }, { passive: false });
+  carouselViewport.addEventListener("touchend", function (ev) {
+    if (touchStartX === null) return;
+    var dx = ev.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    touchStartY = null;
+    if (Math.abs(dx) > 40) {
+      ev.stopPropagation();
+      var nextIdx = currentIdx + (dx < 0 ? 1 : -1);
+      if (nextIdx < 0) {
+        runEdgeBounce(carouselViewport, "left");
+        return;
+      }
+      if (nextIdx > total - 1) {
+        runEdgeBounce(carouselViewport, "right");
+        return;
+      }
+      goToExp(nextIdx);
+    }
+  }, { passive: true });
+  carouselViewport.addEventListener("touchcancel", function () {
+    touchStartX = null;
+    touchStartY = null;
+  }, { passive: true });
+
+  /* ── PROJECTS ─────────────────────────────────────────── */
+  var grid = document.getElementById("projects-grid");
+
+  d.projects.forEach(function (proj) {
+    var card = el("div", "proj-card");
+    card.dataset.projId = proj.id;
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", "View details for " + proj.name);
+    card.appendChild(el("div", "proj-name", esc(proj.name)));
+    card.appendChild(el("div", "proj-stack", esc(proj.stack)));
+    card.appendChild(el("p",   "proj-desc",  esc(proj.description)));
+    if (proj.links && proj.links.length) {
+      var hint = el("div", "proj-hint", "Click for details &amp; links →");
+      card.appendChild(hint);
+    } else {
+      var hint = el("div", "proj-hint", "Click for details →");
+      card.appendChild(hint);
+    }
+    grid.appendChild(card);
+  });
+
+  /* ── PROJECT BOTTOM SHEET ─────────────────────────────── */
+  var sheetOverlay = document.getElementById("proj-sheet-overlay");
+  var sheetClose   = document.getElementById("sheet-close");
+  var sheetTitle   = document.getElementById("sheet-title");
+  var sheetStack   = document.getElementById("sheet-stack");
+  var sheetDesc    = document.getElementById("sheet-desc");
+  var sheetDetails = document.getElementById("sheet-details");
+  var sheetLinks   = document.getElementById("sheet-links");
+  var sheetImgWrap = document.getElementById("sheet-image-wrap");
+  var skillSheetOverlay = document.getElementById("skill-sheet-overlay");
+  var skillSheetClose   = document.getElementById("skill-sheet-close");
+  var skillSheetTitle   = document.getElementById("skill-sheet-title");
+  var skillSheetStack   = document.getElementById("skill-sheet-stack");
+  var skillSheetDesc    = document.getElementById("skill-sheet-desc");
+  var skillSheetStories = document.getElementById("skill-sheet-stories");
+  var savedScrollY = 0;
+
+  function lockBodyScroll() {
+    savedScrollY = window.pageYOffset;
+    document.body.style.top = '-' + savedScrollY + 'px';
+    document.body.classList.add("sheet-open");
+  }
+
+  function unlockBodyScroll() {
+    document.body.classList.remove("sheet-open");
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
+  }
+
+  function createStoryArticle(story) {
+    var article = el("article", "skill-story");
+    if (story.kicker) article.appendChild(el("p", "skill-story-kicker", esc(story.kicker)));
+    article.appendChild(el("h3", "skill-story-title", esc(story.title)));
+    if (story.context) article.appendChild(el("p", "skill-story-context", esc(story.context)));
+
+    if (story.details && story.details.length) {
+      var ul = el("ul", "sheet-details");
+      story.details.forEach(function (detail) {
+        ul.appendChild(el("li", null, esc(detail)));
+      });
+      article.appendChild(ul);
+    }
+
+    if (story.htmlEmbed) {
+      var embedContainer = el("div", "sheet-embed-container");
+      embedContainer.innerHTML = story.htmlEmbed; // Trusted HTML from data.js
+      article.appendChild(embedContainer);
+    }
+
+    if (story.snippets && story.snippets.length) {
+      var samples = el("div", "code-sample-list");
+      story.snippets.forEach(function (snippet) {
+        var sample = el("section", "code-sample");
+        sample.appendChild(el("div", "code-sample-label", esc(snippet.language)));
+        var pre = el("pre", "code-sample-pre");
+        pre.textContent = snippet.code;
+        sample.appendChild(pre);
+        samples.appendChild(sample);
+      });
+      article.appendChild(samples);
+    }
+
+    if (story.links && story.links.length) {
+      var row = el("div", "sheet-links");
+      story.links.forEach(function (link) {
+        if (link.url) {
+          var a = el("a", "btn btn-neon skill-ext-link", esc(link.label) + " →");
+          a.href = link.url;
+          a.dataset.label = link.label;
+          row.appendChild(a);
+        } else if (link.type && link.id) {
+          var btn = el("button", "btn btn-neon skill-nav-link", esc(link.label) + " →");
+          btn.type = "button";
+          btn.dataset.navType = link.type;
+          btn.dataset.navId = link.id;
+          row.appendChild(btn);
+        }
+      });
+      article.appendChild(row);
+    }
+    return article;
+  }
+
+  function openSkillSheet(skillId) {
+    var skill = d.skills.find(function (item) {
+      return (item.id || item.label) === skillId;
+    });
+    if (!skill || !skill.sheet) return;
+
+    skillSheetTitle.textContent = skill.sheet.title || skill.label;
+    skillSheetStack.textContent = skill.sheet.stack || skill.value;
+    skillSheetDesc.textContent  = skill.sheet.description || "";
+
+    skillSheetStories.innerHTML = "";
+    var skillStories = resolveStories(skill.sheet);
+    if (skillStories.length) {
+      skillStories.forEach(function (story) {
+        skillSheetStories.appendChild(createStoryArticle(story));
+      });
+    }
+
+    skillSheetOverlay.removeAttribute("hidden");
+    lockBodyScroll();
+    skillSheetClose.focus();
+  }
+
+  function closeSkillSheet() {
+    skillSheetOverlay.setAttribute("hidden", "");
+    unlockBodyScroll();
+  }
+
+  function openExpSheet(expId) {
+    var exp = d.experience.find(function (e) { return e.id === expId; });
+    var expStories = resolveStories(exp);
+    if (!exp || !expStories.length) return;
+
+    skillSheetTitle.textContent = exp.role + " @ " + exp.company;
+    skillSheetStack.textContent = exp.stack;
+    skillSheetDesc.textContent  = exp.period;
+
+    skillSheetStories.innerHTML = "";
+
+    /* stories */
+    expStories.forEach(function (story) {
+      skillSheetStories.appendChild(createStoryArticle(story));
+    });
+
+    /* related projects */
+    if (exp.relatedProjects && exp.relatedProjects.length) {
+      var relHeader = el("p", "skill-story-kicker", "Related Projects");
+      skillSheetStories.appendChild(relHeader);
+
+      var relGrid = el("div", "exp-related-grid");
+      exp.relatedProjects.forEach(function (projId) {
+        var proj = d.projects.find(function (p) { return p.id === projId; });
+        if (!proj) return;
+        var mini = el("button", "exp-related-card");
+        mini.type = "button";
+        mini.dataset.projId = projId;
+        mini.appendChild(el("div", "exp-related-name", esc(proj.name)));
+        mini.appendChild(el("div", "exp-related-stack", esc(proj.stack)));
+        relGrid.appendChild(mini);
+      });
+      skillSheetStories.appendChild(relGrid);
+    }
+
+    skillSheetOverlay.removeAttribute("hidden");
+    lockBodyScroll();
+    skillSheetClose.focus();
+  }
+
+  function openSheet(projId) {
+    var proj = d.projects.find(function (p) { return p.id === projId; });
+    if (!proj) return;
+
+    sheetTitle.textContent = proj.name;
+    sheetStack.textContent = proj.stack;
+    sheetDesc.textContent  = proj.description;
+
+    /* image */
+    sheetImgWrap.innerHTML = "";
+    if (proj.image) {
+      var img = document.createElement("img");
+      img.src = proj.image;
+      img.alt = proj.name + " preview";
+      img.className = "sheet-img";
+      sheetImgWrap.appendChild(img);
+    }
+
+    /* details */
+    sheetDetails.innerHTML = "";
+    if (proj.details && proj.details.length) {
+      proj.details.forEach(function (d) {
+        sheetDetails.appendChild(el("li", null, esc(d)));
+      });
+    }
+
+    /* links */
+    sheetLinks.innerHTML = "";
+    if (proj.links && proj.links.length) {
+      proj.links.forEach(function (lnk) {
+        var a = el("a", "btn btn-neon sheet-ext-link", esc(lnk.label) + " →");
+        a.href = lnk.url;
+        a.dataset.label = lnk.label;
+        sheetLinks.appendChild(a);
+      });
+    }
+
+    sheetOverlay.removeAttribute("hidden");
+    /* iOS Safari scroll-lock: fix body at current scroll position */
+    lockBodyScroll();
+    sheetClose.focus();
+  }
+
+  function closeSheet() {
+    sheetOverlay.setAttribute("hidden", "");
+    unlockBodyScroll();
+  }
+
+  /* project card click / keyboard */
+  grid.addEventListener("click", function (ev) {
+    var card = ev.target.closest(".proj-card");
+    if (!card) return;
+    openSheet(card.dataset.projId);
+  });
+
+  grid.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") {
+      var card = ev.target.closest(".proj-card");
+      if (card) { ev.preventDefault(); openSheet(card.dataset.projId); }
+    }
+  });
+
+  sheetClose.addEventListener("click", closeSheet);
+  sheetOverlay.addEventListener("click", function (ev) {
+    if (ev.target === sheetOverlay) closeSheet();
+  });
+
+  /* redirect modal for sheet links */
+  sheetOverlay.addEventListener("click", function (ev) {
+    var a = ev.target.closest(".sheet-ext-link");
+    if (!a) return;
+    ev.preventDefault();
+    closeSheet();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
+
+  skillSheetClose.addEventListener("click", closeSkillSheet);
+  skillSheetOverlay.addEventListener("click", function (ev) {
+    if (ev.target === skillSheetOverlay) closeSkillSheet();
+  });
+
+  skillSheetOverlay.addEventListener("click", function (ev) {
+    /* related-project mini-card → open project sheet */
+    var relCard = ev.target.closest(".exp-related-card");
+    if (relCard) {
+      closeSkillSheet();
+      showSection("projects");
+      openSheet(relCard.dataset.projId);
+      return;
+    }
+
+    var navBtn = ev.target.closest(".skill-nav-link");
+    if (navBtn) {
+      closeSkillSheet();
+      navigateTo(navBtn.dataset.navType, navBtn.dataset.navId);
+      return;
+    }
+
+    var a = ev.target.closest(".skill-ext-link");
+    if (!a) return;
+    ev.preventDefault();
+    closeSkillSheet();
+    openRedirect(a.href, a.dataset.label || a.textContent);
+  });
+
+  /* ── KEYBOARD GLOBAL ──────────────────────────────────── */
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") {
+      if (!skillSheetOverlay.hasAttribute("hidden")) { closeSkillSheet(); return; }
+      if (!sheetOverlay.hasAttribute("hidden")) { closeSheet(); return; }
+      if (!aiModal.hasAttribute("hidden"))      { closeAiModal(); return; }
+      if (!modal.hasAttribute("hidden"))        { closeRedirect(); }
+    }
+  });
+
+  /* ── SITE NAV (section switcher) ──────────────────────── */
+  var navTabs      = document.querySelectorAll(".nav-tab");
+  var sectionOrder = ["experience", "about", "projects"];
+  var sectionsTrack = document.getElementById("sections-track");
+  var currentSectionIdx = 0;
+  var sectionScrollY = {};   /* remembers scroll position per section */
+
+  function showSection(sectionId) {
+    var idx = sectionOrder.indexOf(sectionId);
+    if (idx === -1) return;
+
+    /* save scroll position for the section we are leaving (not experience — it always starts at top) */
+    var leavingId = sectionOrder[currentSectionIdx];
+    if (leavingId && leavingId !== "experience") sectionScrollY[leavingId] = window.scrollY;
+
+    currentSectionIdx = idx;
+    sectionsTrack.style.transform = "translateX(-" + (idx * 100) + "%)";
+    navTabs.forEach(function (t) {
+      t.classList.toggle("active", t.dataset.section === sectionId);
+    });
+    /* only paint the active section — hides off-screen sections to prevent overflow issues */
+    document.querySelectorAll(".site-section").forEach(function (s) {
+      s.classList.toggle("is-visible", s.id === sectionId);
+    });
+
+    /* restore saved scroll for the new section; experience always goes to the top */
+    var targetY = (sectionId === "experience") ? 0 : (sectionScrollY[sectionId] || 0);
+    window.scrollTo({ top: targetY, behavior: "auto" });
+  }
+
+  /* initialise sections to "about" without triggering the slide transition */
+  sectionsTrack.style.transition = 'none';
+  showSection("experience");
+  void sectionsTrack.offsetWidth; /* force reflow before re-enabling transition */
+  sectionsTrack.style.transition = '';
+
+  navTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      showSection(tab.dataset.section);
+    });
+  });
+
+  /* section swipe support */
+  var secTouchX = null;
+  var secTouchY = null;
+  var sectionsViewport = document.querySelector(".sections-viewport");
+  sectionsViewport.addEventListener("touchstart", function (ev) {
+    secTouchX = ev.touches[0].clientX;
+    secTouchY = ev.touches[0].clientY;
+  }, { passive: true });
+  sectionsViewport.addEventListener("touchmove", function (ev) {
+    if (secTouchX === null) return;
+    var dx = ev.touches[0].clientX - secTouchX;
+    var dy = ev.touches[0].clientY - secTouchY;
+    if (Math.abs(dx) > Math.abs(dy)) ev.preventDefault();
+  }, { passive: false });
+  sectionsViewport.addEventListener("touchend", function (ev) {
+    if (secTouchX === null) return;
+    var dx = ev.changedTouches[0].clientX - secTouchX;
+    secTouchX = null;
+    secTouchY = null;
+    if (Math.abs(dx) > 40) {
+      var newIdx = Math.max(0, Math.min(sectionOrder.length - 1,
+        currentSectionIdx + (dx < 0 ? 1 : -1)));
+      showSection(sectionOrder[newIdx]);
+    }
+  }, { passive: true });
+  sectionsViewport.addEventListener("touchcancel", function () {
+    secTouchX = null;
+    secTouchY = null;
+  }, { passive: true });
+
+  /* ── FOOTER ───────────────────────────────────────────── */
+  document.getElementById("footer-text").textContent =
+    d.name + " · " + new Date().getFullYear();
+
+  var footerHire = document.getElementById("footer-hire");
+  if (d.contact.hireMe) {
+    footerHire.href = d.contact.hireMe;
+    footerHire.removeAttribute("hidden");
+    footerHire.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      openRedirect(d.contact.hireMe, "Hire Me");
+    });
+  }
+
+  /* ── QUERY PARAMS ─────────────────────────────────────── */
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("asktheAIRedirected") === "true") {
+    openAiModal(true);
+  }
+})();
+</script>
+
+</body>
+</html>

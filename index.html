@@ -458,13 +458,43 @@
     aiGrid.appendChild(btn);
   });
 
-  function openAiModal() {
+  function copyAiPrompt(onSuccess) {
+    var prompt = buildAiPrompt();
+    function fallbackCopy() {
+      var ta = document.createElement("textarea");
+      ta.value = prompt;
+      ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var success = false;
+      try { success = document.execCommand("copy"); } catch (e) { }
+      document.body.removeChild(ta);
+      if (success && onSuccess) onSuccess();
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(prompt).then(function() {
+        if (onSuccess) onSuccess();
+      }).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+  }
+
+  function openAiModal(autoCopy) {
     aiCopiedMsg.setAttribute("hidden", "");
     aiModal.removeAttribute("hidden");
+    if (autoCopy) {
+      copyAiPrompt(function() {
+        aiCopiedMsg.textContent = "✓ Prompt auto-copied! Choose your AI below.";
+        aiCopiedMsg.removeAttribute("hidden");
+      });
+    }
   }
   function closeAiModal() { aiModal.setAttribute("hidden", ""); }
 
-  document.getElementById("ai-hire-btn").addEventListener("click", openAiModal);
+  document.getElementById("ai-hire-btn").addEventListener("click", function() { openAiModal(false); });
   aiCancelBtn.addEventListener("click", closeAiModal);
   aiModal.addEventListener("click", function (ev) {
     if (ev.target === aiModal) closeAiModal();
@@ -473,32 +503,12 @@
   aiGrid.addEventListener("click", function (ev) {
     var btn = ev.target.closest(".ai-option-btn");
     if (!btn) return;
-    var prompt = buildAiPrompt();
-    var url    = btn.dataset.aiUrl;
-
-    function afterCopy() {
+    var url = btn.dataset.aiUrl;
+    copyAiPrompt(function() {
+      aiCopiedMsg.textContent = "✓ Prompt copied to clipboard! Paste it in the chat to begin.";
       aiCopiedMsg.removeAttribute("hidden");
       window.open(url, "_blank", "noopener,noreferrer");
-    }
-
-    function fallbackCopy() {
-      /* execCommand fallback for older browsers / blocked clipboard API */
-      var ta = document.createElement("textarea");
-      ta.value = prompt;
-      ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try { document.execCommand("copy"); } catch (e) { /* silently skip */ }
-      document.body.removeChild(ta);
-      afterCopy();
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(prompt).then(afterCopy, fallbackCopy);
-    } else {
-      fallbackCopy();
-    }
+    });
   });
 
 
@@ -1110,7 +1120,7 @@
   /* ── QUERY PARAMS ─────────────────────────────────────── */
   var urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("asktheAIRedirected") === "true") {
-    openAiModal();
+    openAiModal(true);
   }
 })();
 </script>

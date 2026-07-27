@@ -1106,6 +1106,12 @@
       openRedirect(d.contact.hireMe, "Hire Me");
     });
   }
+
+  /* ── QUERY PARAMS ─────────────────────────────────────── */
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("asktheAIRedirected") === "true") {
+    openAiModal();
+  }
 })();
 </script>
 
